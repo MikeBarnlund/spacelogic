@@ -1,10 +1,33 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
+import UserMenu from './UserMenu';
+import type { User } from '@supabase/supabase-js';
 
 export default function Header() {
   const pathname = usePathname();
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const supabase = createClient();
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+      setLoading(false);
+    };
+
+    getUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [supabase.auth]);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-[var(--bg-primary)]/95 backdrop-blur-sm border-b border-[var(--border)]">
@@ -55,9 +78,15 @@ export default function Header() {
               Dashboard
             </Link>
             <div className="w-px h-5 bg-[var(--border)] mx-2" />
-            <Link href="/app" className="btn btn-primary text-sm py-2 px-4">
-              Sign In
-            </Link>
+            {loading ? (
+              <div className="w-8 h-8 rounded-full bg-[var(--gray-100)] animate-pulse" />
+            ) : user ? (
+              <UserMenu user={user} />
+            ) : (
+              <Link href="/auth/signin" className="btn btn-primary text-sm py-2 px-4">
+                Sign In
+              </Link>
+            )}
           </div>
         </nav>
       </div>
