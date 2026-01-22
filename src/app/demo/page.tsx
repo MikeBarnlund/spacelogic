@@ -3,25 +3,9 @@ import ScenarioInput from '@/components/ScenarioInput';
 export default function DemoPage() {
   return (
     <div className="min-h-screen">
-      {/* Hero */}
+      {/* Main Content */}
       <section className="pt-32 md:pt-40 pb-16">
         <div className="container">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <div className="badge mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
-              <span>AI-Powered Analysis</span>
-            </div>
-
-            <h1 className="mb-4">
-              Generate Space Scenarios
-            </h1>
-
-            <p className="text-lg text-[var(--text-tertiary)] max-w-lg mx-auto">
-              Describe your client&apos;s office space needs in natural language.
-              Our AI generates optimized scenarios in seconds.
-            </p>
-          </div>
-
           <ScenarioInput />
         </div>
       </section>

@@ -50,7 +50,7 @@ export default function HomePage() {
               { value: '8-15', unit: 'hrs', label: 'Saved per client' },
               { value: '<10', unit: 'sec', label: 'To generate scenarios' },
               { value: '3-5', unit: '', label: 'Scenarios per query' },
-              { value: '$129', unit: '/mo', label: 'Unlimited access' },
+              { value: '$299', unit: '/mo', label: 'Unlimited access' },
             ].map((stat, i) => (
               <div key={i} className="text-center">
                 <div className="text-3xl md:text-4xl font-semibold text-[var(--gray-900)] mb-1" style={{ fontFamily: 'var(--font-display)' }}>

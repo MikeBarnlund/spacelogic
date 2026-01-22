@@ -14,9 +14,9 @@ SpaceLogic is an AI-native SaaS platform that transforms how commercial real est
 
 **Target Market:** 50,000+ CRE brokers in North America specializing in tenant representation (helping companies find/lease office space).
 
-**Business Model:** Freemium SaaS - Free tier (compete with CBRE Spacer) + Professional tier at $129/month.
+**Business Model:** Freemium SaaS - Free tier (compete with CBRE Spacer) + Professional tier at $299/month.
 
-**Path to Success:** 650 paying customers = $1M ARR (achievable in 2-3 years).
+**Path to Success:** 280 paying customers = $1M ARR (achievable in 2-3 years).
 
 ---
 
@@ -65,7 +65,7 @@ SpaceLogic is an AI-native SaaS platform that transforms how commercial real est
 - Eliminates 2-3 hour post-meeting spreadsheet work
 - Enables real-time collaboration with client
 - Creates "wow moment" in demos
-- Single feature justifies $129/month pricing
+- Single feature justifies $299/month pricing
 
 **Technical approach:**
 - Use Claude API (Sonnet 4) for natural language parsing
@@ -166,7 +166,7 @@ $8,400/employee/year            $7,364/employee/year
 - Limited to 2 client projects/month
 - **Purpose:** Compete with CBRE Spacer, capture users, demonstrate value
 
-### PROFESSIONAL Tier: $129/month
+### PROFESSIONAL Tier: $299/month
 - Unlimited scenarios with side-by-side comparison
 - Local market rent data for major metros
 - Full financial modeling (5-10 year projections)
@@ -211,7 +211,7 @@ $8,400/employee/year            $7,364/employee/year
 - **Anthropic Claude API (Sonnet 4)** - Primary LLM for all natural language processing
 - **Structured JSON outputs** - Use Claude's JSON mode for consistent scenario generation
 - **Cost:** ~$0.50-2.00 per scenario generation
-- **Economics:** At $129/month, can afford 65-250 AI generations per user/month (typical usage: 30-100/month)
+- **Economics:** At $299/month, can afford 150-600 AI generations per user/month (typical usage: 30-100/month)
 
 ### Additional Services
 - **Resend** - Transactional emails
@@ -330,22 +330,22 @@ $8,400/employee/year            $7,364/employee/year
 ## Success Milestones
 
 ### Year 1
-- 200 free users, 50 paid users ($77K ARR)
+- 200 free users, 50 paid users ($179K ARR)
 - 10 team/enterprise accounts ($30K ARR)
-- **Total: ~$107K ARR**
+- **Total: ~$209K ARR**
 - 5+ documented "won deal because of SpaceLogic" cases
 - <5% monthly churn
 
 ### Year 2
-- 1,000 free users, 250 paid users ($387K ARR)
+- 1,000 free users, 250 paid users ($897K ARR)
 - 30 team/enterprise accounts ($90K ARR)
-- **Total: ~$477K ARR**
+- **Total: ~$987K ARR**
 - <3% monthly churn
 
 ### Year 3
-- 3,000 free users, 650 paid users ($1M ARR)
+- 3,000 free users, 650 paid users ($2.3M ARR)
 - 75 team/enterprise accounts ($225K ARR)
-- **Total: ~$1.25M ARR**
+- **Total: ~$2.5M ARR**
 
 ---
 
@@ -498,7 +498,7 @@ Confidence: Medium (city-level data)
 - Focus on "wow moments" in demos (natural language → instant scenarios)
 - Capture video testimonials early
 - Make tool so much faster than Excel that difference is obvious
-- Price low enough ($129/month) that adoption barrier is minimal
+- Price low enough ($299/month) that adoption barrier is minimal
 
 ### Risk: Market data costs too high
 **Mitigation:**
@@ -525,7 +525,7 @@ Before writing code, validate:
 - [ ] 7+ say "yes, absolutely would use with client"
 - [ ] 5+ commit to using on next deal
 
-### 2. Will brokers pay $129/month?
+### 2. Will brokers pay $299/month?
 - [ ] Present full value proposition
 - [ ] Ask for credit card pre-payment (12 months)
 - [ ] 5+ actually give us money
@@ -747,7 +747,7 @@ utilization = current_headcount / max_capacity
 - AI generating relevant, useful scenarios 80%+ of the time
 
 **Business:**
-- $5-10K MRR (40-75 paying customers)
+- $12-22K MRR (40-75 paying customers)
 - Clear path to $100K ARR
 - Low churn (<5%)
 - Strong broker word-of-mouth
@@ -798,7 +798,7 @@ Meeting → AI scenarios → Explore together → Export proposal → Decision
 
 1. **Does this feature help brokers win more deals?** (If no, defer)
 2. **Can we build this in <1 week?** (If no for MVP, simplify or defer)
-3. **Would a broker pay $129/month for this?** (If no, reconsider)
+3. **Would a broker pay $299/month for this?** (If no, reconsider)
 4. **Does this differentiate from CBRE Spacer?** (If no, it's table stakes not differentiator)
 5. **Can we validate this before building?** (Always try to de-risk)
 

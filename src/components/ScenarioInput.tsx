@@ -61,6 +61,23 @@ export default function ScenarioInput() {
       {/* Show input form when no scenarios */}
       {scenarios.length === 0 ? (
         <div className="max-w-2xl mx-auto">
+          {/* Hero header */}
+          <div className="text-center mb-12">
+            <div className="badge mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
+              <span>AI-Powered Analysis</span>
+            </div>
+
+            <h1 className="mb-4">
+              Generate Space Scenarios
+            </h1>
+
+            <p className="text-lg text-[var(--text-tertiary)] max-w-lg mx-auto">
+              Describe your client&apos;s office space needs in natural language.
+              Our AI generates optimized scenarios in seconds.
+            </p>
+          </div>
+
           {/* Input card */}
           <div className="card p-6 md:p-8">
             <label
@@ -185,7 +202,7 @@ export default function ScenarioInput() {
                 </svg>
                 <span>Analysis Complete</span>
               </div>
-              <h1 className="text-2xl md:text-3xl font-bold">Office Space Options</h1>
+              <h1 className="text-2xl md:text-3xl font-bold">Scenario Comparison</h1>
               <p className="text-[var(--text-tertiary)] mt-2 max-w-xl">
                 Based on your inputs, here are three configuration options for your office space needs.
               </p>

@@ -9,8 +9,8 @@
   --bg-primary: #0a1419;
   --bg-secondary: #0d1a1f;
   --bg-elevated: #122025;
-  --bg-card: #0f1d22;
-  --bg-card-hover: #142428;
+  --bg-card: rgba(15, 29, 34, 0.85);
+  --bg-card-hover: rgba(20, 36, 40, 0.9);
 
   /* Text colors */
   --text-primary: #ffffff;
