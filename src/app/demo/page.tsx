@@ -8,17 +8,17 @@ export default function DemoPage() {
         <div className="container">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <div className="badge mb-6">
-              <svg className="w-4 h-4 text-[var(--primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polygon points="5 3 19 12 5 21 5 3" />
-              </svg>
-              <span>Interactive Demo</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
+              <span>AI-Powered Analysis</span>
             </div>
 
-            <h1 className="mb-4">Generate Space Scenarios</h1>
+            <h1 className="mb-4">
+              Generate Space Scenarios
+            </h1>
 
-            <p className="text-lg text-[var(--gray-500)]">
+            <p className="text-lg text-[var(--text-tertiary)] max-w-lg mx-auto">
               Describe your client&apos;s office space needs in natural language.
-              Our AI generates 3-5 optimized scenarios in seconds.
+              Our AI generates optimized scenarios in seconds.
             </p>
           </div>
 
@@ -29,7 +29,7 @@ export default function DemoPage() {
       {/* Features */}
       <section className="py-16 border-t border-[var(--border)]">
         <div className="container">
-          <div className="grid sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
+          <div className="grid sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
             {[
               {
                 icon: (
@@ -38,8 +38,9 @@ export default function DemoPage() {
                     <polyline points="12 6 12 12 16 14" />
                   </svg>
                 ),
+                stat: '<10s',
                 title: 'Real-time Results',
-                description: 'Scenarios in under 10 seconds',
+                description: 'Instant scenario generation',
               },
               {
                 icon: (
@@ -47,8 +48,9 @@ export default function DemoPage() {
                     <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                   </svg>
                 ),
-                title: 'Financial Modeling',
-                description: 'Full cost projections included',
+                stat: '3',
+                title: 'Cost Tiers',
+                description: 'Low, mid, high projections',
               },
               {
                 icon: (
@@ -57,22 +59,22 @@ export default function DemoPage() {
                     <path d="M3 9h18M9 21V9" />
                   </svg>
                 ),
-                title: 'Compare Options',
-                description: 'Side-by-side analysis',
+                stat: '3',
+                title: 'Workspace Types',
+                description: 'Traditional to progressive',
               },
             ].map((feature, i) => (
-              <div key={i} className="flex items-start gap-4 p-5 rounded-xl bg-[var(--gray-50)] border border-[var(--border)]">
-                <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-white border border-[var(--border)] text-[var(--primary)] flex items-center justify-center">
+              <div key={i} className="p-5 rounded-xl bg-[var(--bg-card)] border border-[var(--border)] hover:border-[var(--border-hover)] transition-colors">
+                <div className="icon-box mb-4">
                   {feature.icon}
                 </div>
-                <div>
-                  <h3 className="text-base font-medium text-[var(--gray-900)] mb-1">
-                    {feature.title}
-                  </h3>
-                  <p className="text-sm text-[var(--gray-500)]">
-                    {feature.description}
-                  </p>
-                </div>
+                <div className="text-2xl font-semibold text-[var(--accent)] mb-1 mono">{feature.stat}</div>
+                <h3 className="text-sm font-medium text-[var(--text-primary)] mb-0.5">
+                  {feature.title}
+                </h3>
+                <p className="text-sm text-[var(--text-muted)]">
+                  {feature.description}
+                </p>
               </div>
             ))}
           </div>
@@ -82,17 +84,27 @@ export default function DemoPage() {
       {/* Upgrade CTA */}
       <section className="py-16">
         <div className="container">
-          <div className="max-w-2xl mx-auto p-8 md:p-12 rounded-2xl bg-[var(--gray-900)] text-center">
-            <h2 className="text-white text-2xl md:text-3xl mb-3">Ready for the full experience?</h2>
-            <p className="text-[var(--gray-400)] mb-8 max-w-lg mx-auto">
-              Unlock unlimited scenarios, local market data, professional exports, and more with SpaceLogic Pro.
+          <div className="max-w-2xl mx-auto p-8 md:p-10 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] text-center">
+            <p className="text-[var(--accent)] text-xs uppercase tracking-widest mb-3 font-medium">
+              Full Experience
             </p>
-            <button className="btn bg-white text-[var(--gray-900)] hover:bg-[var(--gray-100)]">
-              Start Free Trial
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </button>
+            <h2 className="text-[var(--text-primary)] mb-3">
+              Ready to transform your workflow?
+            </h2>
+            <p className="text-[var(--text-tertiary)] mb-8 max-w-md mx-auto">
+              Unlock unlimited scenarios, local market data, professional exports, and advanced financial modeling.
+            </p>
+            <div className="flex items-center justify-center gap-3">
+              <button className="btn btn-primary">
+                Start Free Trial
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </button>
+              <button className="btn btn-secondary">
+                Learn More
+              </button>
+            </div>
           </div>
         </div>
       </section>

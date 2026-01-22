@@ -395,41 +395,60 @@ $8,400/employee/year            $7,364/employee/year
 
 ### AI Prompt Engineering
 
-**Scenario Generation Prompt Structure:**
+**Scenario Generation - Workstyle-Aware Model:**
+
+The system uses a workstyle-aware approach that calculates space based on actual in-office attendance, not total headcount.
+
+**Extracted Requirements:**
+1. Current headcount: Total number of employees
+2. Growth projection: Expected growth (% or absolute + timeframe)
+3. Workstyle distribution (must sum to 100%):
+   - `on_site`: % working 4-5 days/week
+   - `hybrid`: % working 1-3 days/week
+   - `remote`: % working <1 day/week
+4. Location: Market/city
+
+**Attendance Calculation:**
 ```
-You are an expert CRE broker analyzing office space needs.
+average_daily = (on_site% × 0.9) + (hybrid% × 0.4) + (remote% × 0.1) × headcount
+peak_attendance = average_daily × 1.25
+```
+Space is calculated based on **peak attendance**, not total headcount.
 
-Client input: "[natural language description]"
+**Three Scenario Types:**
+| Type | Sqft/Person | Seats/Person | Description |
+|------|-------------|--------------|-------------|
+| Traditional | 210 | 1.79 | Dedicated desks, more private offices |
+| Moderate | 165 | 1.46 | Mix of dedicated and shared |
+| Progressive | 143 | 1.14 | Hot desking, activity-based working |
 
-Extract and structure:
-1. Current headcount: [number]
-2. Growth projection: [number] employees in [timeframe]
-3. Growth projection: [number] employees in [timeframe]
-4. Budget range: $[min]-$[max]/year
-5. Space preferences: [open/private ratio, amenities]
-6. Location: [market/submarket]
+**Cost Ranges (per sqft/year):**
+- Low: $120 (suburban Class B/C)
+- Mid: $250 (urban Class B)
+- High: $450 (premium Class A)
 
-Generate 3 distinct scenarios:
-1. Budget-optimized (minimize cost)
-2. Balanced (cost vs. growth)
-3. Growth-focused (maximize flexibility)
-
-For each scenario return JSON:
+**For each scenario return JSON:**
+```json
 {
   "scenario_name": string,
+  "scenario_type": "traditional" | "moderate" | "progressive",
   "total_sqft": number,
+  "sqft_per_person": number,
+  "seats_per_person": number,
   "layout_mix": {
     "private_offices": number,
     "open_desks": number,
     "conference_rooms": number,
     "common_areas": number
   },
-  "estimated_annual_cost": number,
-  "cost_per_employee": number,
-  "capacity": {
-    "current": number,
-    "max": number
+  "annual_cost_range": { "low": number, "mid": number, "high": number },
+  "cost_per_employee_range": { "low": number, "mid": number, "high": number },
+  "attendance_metrics": {
+    "total_headcount": number,
+    "average_daily_attendance": number,
+    "peak_attendance": number
   },
+  "capacity": { "current": number, "max": number },
   "pros": [string],
   "cons": [string]
 }
@@ -525,18 +544,40 @@ Before writing code, validate:
 ### Scenario Generation Logic
 
 **Input categories:**
-1. **Company profile** - Industry, stage, work style (remote/hybrid/in-office)
-2. **Headcount** - Current and projected (with timeline)
-3. **Budget** - Annual spend range or per-employee target
-4. **Preferences** - Open vs. private ratio, amenities, culture priorities
+1. **Headcount** - Current employee count
+2. **Growth projection** - Expected growth (% or absolute + timeframe)
+3. **Workstyle distribution** - Percentages that sum to 100%:
+   - `on_site`: % working 4-5 days/week in office
+   - `hybrid`: % working 1-3 days/week in office
+   - `remote`: % working <1 day/week in office
+4. **Location** - Market/city for context
 
-**Output scenarios should vary on:**
-1. **Space efficiency** - More open = less sqft = lower cost
-2. **Growth buffer** - How much excess capacity vs. current needs
-3. **Quality/cost tradeoff** - Class A expensive vs. Class B affordable
-4. **Location** - Urban premium vs. suburban economy
+**Workstyle Attendance Factors:**
+- On-site workers: 90% daily attendance
+- Hybrid workers: 40% daily attendance (avg 2 days/week)
+- Remote workers: 10% daily attendance (occasional visits)
 
-**Always generate 3-5 scenarios with clear tradeoffs**
+**Attendance Calculation:**
+```
+average_daily_attendance = headcount × ((on_site% × 0.9) + (hybrid% × 0.4) + (remote% × 0.1))
+peak_attendance = average_daily_attendance × 1.25  // 25% buffer for Tue-Wed-Thu clustering
+```
+
+**Output - Three Scenario Types:**
+| Type | Sqft/Person | Seats/Person | Style |
+|------|-------------|--------------|-------|
+| Traditional | 210 | 1.79 | Dedicated desks, private offices |
+| Moderate | 165 | 1.46 | Mix of dedicated and shared |
+| Progressive | 143 | 1.14 | Hot desking, activity-based |
+
+Space is calculated from **peak attendance**, not total headcount.
+
+**Cost Range Calculation:**
+- Low: total_sqft × $120/sqft (suburban Class B/C)
+- Mid: total_sqft × $250/sqft (urban Class B)
+- High: total_sqft × $450/sqft (premium Class A)
+
+**Always generate exactly 3 scenarios: Traditional, Moderate, Progressive**
 
 ### Financial Modeling Formulas
 
@@ -567,14 +608,25 @@ utilization = current_headcount / max_capacity
 
 ### Space Allocation Standards
 
+**Scenario-Based Sqft per Person (based on peak attendance):**
+| Scenario Type | Sqft/Person | Seats/Person | Description |
+|---------------|-------------|--------------|-------------|
+| Traditional | 210 | 1.79 | Dedicated desks, generous private offices |
+| Moderate | 165 | 1.46 | Mix of dedicated and shared workspaces |
+| Progressive | 143 | 1.14 | Hot desking, activity-based working |
+
 **Typical sqft per workspace type:**
 - Private office: 100-150 sqft
 - Open desk: 50-75 sqft
 - Conference room small (4-6 people): 150-200 sqft
 - Conference room large (8-12 people): 250-350 sqft
-- Break room: 200-400 sqft
-- Reception: 150-300 sqft
+- Common areas: 15-20% of total sqft
 - Circulation factor: 25-35% of total
+
+**Layout Mix Guidelines by Scenario:**
+- **Traditional**: 30-40% private offices, moderate open desks
+- **Moderate**: 20-25% private offices, more open desks, flexible spaces
+- **Progressive**: 10-15% private offices, hot desks, many small meeting rooms
 
 **These are defaults - broker can override**
 

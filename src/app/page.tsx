@@ -15,15 +15,15 @@ export default function HomePage() {
 
             {/* Headline */}
             <h1 className="mb-6 opacity-0 animate-fade-in-up delay-100">
-              Hybrid Work Models That
+              Office space scenarios.
               <br />
-              <span className="text-[var(--primary)]">Fuel Productivity</span>
+              <span className="text-[var(--primary)]">In minutes, not hours.</span>
             </h1>
 
             {/* Subheadline */}
             <p className="text-xl md:text-[22px] text-[var(--gray-500)] leading-relaxed mb-10 max-w-2xl mx-auto opacity-0 animate-fade-in-up delay-200">
-              Generate multiple professional scenarios in real-time during client meetings.
-              Save hours on every engagement with AI-powered analysis.
+              AI-powered space planning and financial modeling for CRE brokers.
+              Generate professional proposals in real-time, right in your client meetings.
             </p>
 
             {/* CTAs */}
