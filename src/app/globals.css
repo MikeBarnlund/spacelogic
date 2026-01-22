@@ -1,27 +1,331 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
+  /* Primary - Muted teal-blue from Hiveworks */
+  --primary: #346584;
+  --primary-hover: #2a5169;
+  --primary-light: #4a7a9a;
+
+  /* Neutrals - Warm grays */
+  --gray-900: #111111;
+  --gray-800: #1a1a1a;
+  --gray-700: #2d2d2d;
+  --gray-600: #4a4a4a;
+  --gray-500: #767676;
+  --gray-400: #9a9a9a;
+  --gray-300: #c4c4c4;
+  --gray-200: #e5e5e5;
+  --gray-100: #f5f5f5;
+  --gray-50: #fafafa;
+
+  /* Semantic */
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #111111;
+  --muted: #767676;
+  --border: #e5e5e5;
+
+  /* Spacing scale */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2.5rem;
+  --space-xl: 4rem;
+  --space-2xl: 6rem;
+  --space-3xl: 8rem;
+
+  /* Typography */
+  --font-display: 'Outfit', sans-serif;
+  --font-body: 'Source Sans 3', sans-serif;
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.6;
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--gray-900);
+}
+
+h1 {
+  font-size: clamp(2.25rem, 5vw, 3rem);
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  font-size: 1.25rem;
+}
+
+p {
+  color: var(--gray-600);
+}
+
+/* Links */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Focus states */
+*:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Selection */
+::selection {
+  background: var(--primary);
+  color: white;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.875rem 2rem;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--gray-900);
+  border: 1.5px solid var(--gray-300);
+}
+
+.btn-secondary:hover {
+  border-color: var(--gray-900);
+  background: var(--gray-50);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--gray-600);
+  padding: 0.5rem 1rem;
+}
+
+.btn-ghost:hover {
+  color: var(--gray-900);
+  background: var(--gray-100);
+}
+
+/* Container */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 0 2.5rem;
   }
+}
+
+/* Section spacing */
+.section {
+  padding: var(--space-2xl) 0;
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding: var(--space-3xl) 0;
+  }
+}
+
+/* Card */
+.card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: all var(--transition-base);
+}
+
+.card:hover {
+  border-color: var(--gray-300);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* Input styles */
+.input {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  padding: 1rem 1.25rem;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: white;
+  color: var(--foreground);
+  transition: all var(--transition-fast);
+}
+
+.input::placeholder {
+  color: var(--gray-400);
+}
+
+.input:hover {
+  border-color: var(--gray-300);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(52, 101, 132, 0.1);
+}
+
+/* Textarea */
+textarea.input {
+  resize: vertical;
+  min-height: 180px;
+  line-height: 1.7;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.animate-slide-down {
+  animation: slideDown 0.4s ease forwards;
+}
+
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+
+/* Divider */
+.divider {
+  height: 1px;
+  background: var(--border);
+  width: 100%;
+}
+
+/* Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--gray-100);
+  border-radius: 50px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--gray-600);
+}
+
+/* Subtle background pattern */
+.bg-pattern {
+  background-image: radial-gradient(circle at 1px 1px, var(--gray-200) 1px, transparent 0);
+  background-size: 40px 40px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--gray-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gray-300);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-400);
 }
