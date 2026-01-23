@@ -37,48 +37,44 @@ export default async function AppPage() {
           </p>
 
           {/* Quick Actions */}
-          <div className="grid sm:grid-cols-2 gap-4 max-w-md mx-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-lg mx-auto">
             <a
               href="/demo"
-              className="p-4 rounded-xl bg-[var(--gray-100)] border border-[var(--border)] hover:border-[var(--accent)]/30 transition-colors group"
+              className="group flex items-center gap-3 px-6 py-4 rounded-xl bg-[var(--accent)] text-[var(--bg-primary)] font-medium hover:bg-[var(--accent-hover)] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-[var(--accent)]/20"
             >
-              <div className="w-10 h-10 mb-3 rounded-lg bg-[var(--accent)]/10 flex items-center justify-center">
-                <svg
-                  className="w-5 h-5 text-[var(--accent)]"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                >
-                  <polygon points="5 3 19 12 5 21 5 3" />
-                </svg>
-              </div>
-              <h3 className="font-medium text-[var(--text-primary)] mb-1">
-                Try the Demo
-              </h3>
-              <p className="text-sm text-[var(--gray-400)]">
-                Explore the interactive demo
-              </p>
+              <svg
+                className="w-5 h-5"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <polygon points="5 3 19 12 5 21 5 3" />
+              </svg>
+              <span>Try the Demo</span>
+              <svg
+                className="w-4 h-4 opacity-60 group-hover:translate-x-0.5 transition-transform"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
             </a>
 
-            <div className="p-4 rounded-xl bg-[var(--gray-100)] border border-[var(--border)] opacity-60">
-              <div className="w-10 h-10 mb-3 rounded-lg bg-[var(--gray-200)] flex items-center justify-center">
-                <svg
-                  className="w-5 h-5 text-[var(--gray-400)]"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                >
-                  <path d="M12 5v14M5 12h14" />
-                </svg>
-              </div>
-              <h3 className="font-medium text-[var(--text-primary)] mb-1">
-                New Project
-              </h3>
-              <p className="text-sm text-[var(--gray-400)]">
-                Coming soon
-              </p>
+            <div
+              className="flex items-center gap-3 px-6 py-4 rounded-xl bg-[var(--gray-100)] border border-[var(--border)] text-[var(--gray-400)] cursor-not-allowed"
+            >
+              <svg
+                className="w-5 h-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              >
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+              <span className="font-medium">New Project</span>
+              <span className="text-xs bg-[var(--gray-200)] px-2 py-0.5 rounded-full">Soon</span>
             </div>
           </div>
         </div>
