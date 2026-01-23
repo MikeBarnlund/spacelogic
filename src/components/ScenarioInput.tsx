@@ -4,6 +4,14 @@ import { useState } from 'react';
 import { Scenario, GenerateScenariosResponse, ExtractedRequirements } from '@/types/scenario';
 import ScenarioCard from './ScenarioCard';
 
+// Helper to detect if projection is a reduction (checks both flag and text)
+function isReduction(requirements: ExtractedRequirements): boolean {
+  if (requirements.is_reduction === true) return true;
+  if (!requirements.growth_projection) return false;
+  const text = requirements.growth_projection.toLowerCase();
+  return /\b(reduction|reduce|decrease|downsize|downsizing|shrink|layoff|rif|cut)\b/.test(text);
+}
+
 export default function ScenarioInput() {
   const [input, setInput] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
@@ -259,7 +267,9 @@ export default function ScenarioInput() {
                       </svg>
                     </div>
                     <div>
-                      <div className="text-xs text-[var(--text-muted)] mb-1">Projected Growth</div>
+                      <div className="text-xs text-[var(--text-muted)] mb-1">
+                        {isReduction(extractedRequirements) ? 'Projected Reduction' : 'Projected Growth'}
+                      </div>
                       <div className="text-2xl font-semibold">
                         <span className="text-[var(--accent)]">{extractedRequirements.growth_projection}</span>
                       </div>
@@ -306,6 +316,68 @@ export default function ScenarioInput() {
                     <div className="text-center">
                       <div className="text-xs text-[var(--text-muted)] mb-2">Remote (&lt;1 day)</div>
                       <div className="text-3xl font-semibold mono">{extractedRequirements.workstyle_distribution.remote}%</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Office Attendance - Calculated from Workstyle */}
+              {extractedRequirements.workstyle_distribution && scenarios[0]?.attendance_metrics && (
+                <div className="mt-6 pt-6 border-t border-[var(--border)]">
+                  <div className="flex items-center gap-2 mb-4">
+                    <svg className="w-4 h-4 text-[var(--accent)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                      <circle cx="9" cy="7" r="4" />
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                    <span className="text-sm font-medium text-[var(--text-secondary)]">Office Attendance</span>
+                    <span className="text-xs text-[var(--text-muted)]">(calculated from workstyle)</span>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-[var(--accent-muted)] border border-[var(--border-accent)]">
+                    <div className="grid grid-cols-3 gap-6 text-center">
+                      {/* Total Headcount */}
+                      <div>
+                        <div className="text-2xl font-semibold mono text-[var(--text-primary)]">
+                          {scenarios[0].attendance_metrics.total_headcount}
+                        </div>
+                        <div className="text-xs text-[var(--text-muted)] mt-1">
+                          Total Headcount
+                          {extractedRequirements.growth_projection && (
+                            <span className="block text-[var(--accent)]">
+                              {isReduction(extractedRequirements) ? '(after reduction)' : '(after growth)'}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Average Daily */}
+                      <div className="border-x border-[var(--border-accent)]">
+                        <div className="text-2xl font-semibold mono text-[var(--text-primary)]">
+                          {Math.round(scenarios[0].attendance_metrics.average_daily_attendance)}
+                        </div>
+                        <div className="text-xs text-[var(--text-muted)] mt-1">
+                          Average Daily
+                          <span className="block">(typical day)</span>
+                        </div>
+                      </div>
+
+                      {/* Peak */}
+                      <div>
+                        <div className="text-2xl font-semibold mono text-[var(--accent)]">
+                          {Math.round(scenarios[0].attendance_metrics.peak_attendance)}
+                        </div>
+                        <div className="text-xs text-[var(--text-muted)] mt-1">
+                          Peak Attendance
+                          <span className="block">(Tue-Wed-Thu)</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Calculation formula - subtle */}
+                    <div className="mt-4 pt-3 border-t border-[var(--border-accent)] text-xs text-[var(--text-muted)] text-center">
+                      Peak = Avg Daily × 1.25 buffer for mid-week clustering
                     </div>
                   </div>
                 </div>

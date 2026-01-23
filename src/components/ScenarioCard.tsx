@@ -102,31 +102,6 @@ export default function ScenarioCard({ scenario, index }: ScenarioCardProps) {
         </div>
       </div>
 
-      {/* Attendance Metrics */}
-      <div className="mb-4 p-3 rounded-lg bg-[var(--accent-muted)] border border-[var(--border-accent)]">
-        <div className="text-xs font-medium text-[var(--accent)] mb-2 uppercase tracking-wider">Attendance Planning</div>
-        <div className="grid grid-cols-3 gap-2 text-center">
-          <div>
-            <div className="text-lg font-semibold text-[var(--text-primary)] mono">
-              {scenario.attendance_metrics.total_headcount}
-            </div>
-            <div className="text-xs text-[var(--text-muted)]">Total</div>
-          </div>
-          <div>
-            <div className="text-lg font-semibold text-[var(--text-primary)] mono">
-              {Math.round(scenario.attendance_metrics.average_daily_attendance)}
-            </div>
-            <div className="text-xs text-[var(--text-muted)]">Avg Daily</div>
-          </div>
-          <div>
-            <div className="text-lg font-semibold text-[var(--text-primary)] mono">
-              {Math.round(scenario.attendance_metrics.peak_attendance)}
-            </div>
-            <div className="text-xs text-[var(--text-muted)]">Peak</div>
-          </div>
-        </div>
-      </div>
-
       {/* Key metrics */}
       <div className="grid grid-cols-2 gap-3 mb-4 py-3 border-y border-[var(--border)]">
         <div>
@@ -194,7 +169,7 @@ export default function ScenarioCard({ scenario, index }: ScenarioCardProps) {
               </svg>
             </div>
             <div>
-              <div className="text-sm font-medium text-[var(--text-primary)] mono">{formatNumber(scenario.layout_mix.common_areas)}</div>
+              <div className="text-sm font-medium text-[var(--text-primary)] mono">{formatNumber(scenario.layout_mix.common_areas)} sqft</div>
               <div className="text-xs text-[var(--text-muted)]">Common</div>
             </div>
           </div>
@@ -202,7 +177,7 @@ export default function ScenarioCard({ scenario, index }: ScenarioCardProps) {
       </div>
 
       {/* Pros and Cons */}
-      <div className="mt-auto grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-4">
         <div>
           <div className="text-xs font-medium text-[var(--success)] mb-2 uppercase tracking-wider">Pros</div>
           <ul className="space-y-1.5">

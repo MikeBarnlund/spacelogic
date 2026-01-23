@@ -49,6 +49,7 @@ export interface Scenario {
 export interface ExtractedRequirements {
   current_headcount: number | null;
   growth_projection: string | null;
+  is_reduction: boolean | null;  // true if downsizing, false if growing, null if no change
   workstyle_distribution: WorkstyleDistribution | null;
   location: string | null;
 }
