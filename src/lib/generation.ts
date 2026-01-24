@@ -1,5 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { GenerateScenariosResponse } from '@/types/scenario';
+import { GenerateScenariosResponse, Scenario } from '@/types/scenario';
+import { WorkstylePreset, SpaceType } from '@/types/kit-of-parts';
+import { calculateKitOfParts, generateLayoutMixFromKitOfParts } from '@/lib/kit-of-parts';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -208,7 +210,16 @@ export async function generateScenarios(promptText: string): Promise<GenerationR
       return { success: false, error: 'Failed to parse scenario response' };
     }
 
-    return { success: true, data: parsedResponse };
+    // Enhance scenarios with Kit of Parts (server-side calculation)
+    const enhancedScenarios = enhanceScenariosWithKitOfParts(parsedResponse.scenarios);
+
+    return {
+      success: true,
+      data: {
+        ...parsedResponse,
+        scenarios: enhancedScenarios,
+      },
+    };
   } catch (error) {
     console.error('Error generating scenarios:', error);
     return {
@@ -216,4 +227,50 @@ export async function generateScenarios(promptText: string): Promise<GenerationR
       error: error instanceof Error ? error.message : 'Failed to generate scenarios',
     };
   }
+}
+
+/**
+ * Enhance scenarios with Kit of Parts data calculated server-side
+ * @param scenarios - The scenarios from Claude
+ * @param customSpaceTypes - Optional custom space types for calculation
+ * @returns Enhanced scenarios with kit_of_parts
+ */
+function enhanceScenariosWithKitOfParts(
+  scenarios: Scenario[],
+  customSpaceTypes?: SpaceType[]
+): Scenario[] {
+  return scenarios.map((scenario) => {
+    // Get projected headcount from attendance metrics
+    const headcount = scenario.attendance_metrics.total_headcount;
+
+    // Map scenario type to workstyle preset
+    const workstylePreset: WorkstylePreset = scenario.scenario_type;
+
+    // Calculate Kit of Parts
+    const kitOfParts = calculateKitOfParts({
+      headcount,
+      workstyle_preset: workstylePreset,
+      space_types: customSpaceTypes,
+    });
+
+    // Generate backward-compatible layout_mix from Kit of Parts
+    const layoutMix = generateLayoutMixFromKitOfParts(kitOfParts);
+
+    return {
+      ...scenario,
+      kit_of_parts: kitOfParts,
+      layout_mix: layoutMix, // Override Claude's layout_mix with calculated version
+    };
+  });
+}
+
+/**
+ * Re-calculate Kit of Parts for existing scenarios
+ * Useful when spatial ratios have been updated
+ */
+export function recalculateKitOfParts(
+  scenarios: Scenario[],
+  customSpaceTypes?: SpaceType[]
+): Scenario[] {
+  return enhanceScenariosWithKitOfParts(scenarios, customSpaceTypes);
 }

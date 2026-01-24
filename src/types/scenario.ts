@@ -1,3 +1,5 @@
+import { KitOfParts } from './kit-of-parts';
+
 // Workstyle distribution percentages (should sum to 100)
 export interface WorkstyleDistribution {
   on_site: number;   // % working 4-5 days/week
@@ -38,6 +40,7 @@ export interface Scenario {
   sqft_per_person: number;
   seats_per_person: number;
   layout_mix: LayoutMix;
+  kit_of_parts?: KitOfParts; // Detailed space breakdown (optional for backward compatibility)
   annual_cost_range: CostRange;
   cost_per_employee_range: CostRange;
   attendance_metrics: AttendanceMetrics;

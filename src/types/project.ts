@@ -1,4 +1,5 @@
 import { Scenario, ExtractedRequirements } from './scenario';
+import { SpatialRatiosConfig, WorkstylePreset } from './kit-of-parts';
 
 // Project database record
 export interface Project {
@@ -10,6 +11,8 @@ export interface Project {
   prompt_text: string;
   scenarios: Scenario[] | null;
   extracted_requirements: ExtractedRequirements | null;
+  spatial_ratios: SpatialRatiosConfig | null;
+  workstyle_preset: WorkstylePreset;
   created_at: string;
   updated_at: string;
 }
@@ -22,6 +25,8 @@ export interface CreateProjectInput {
   prompt_text: string;
   scenarios?: Scenario[] | null;
   extracted_requirements?: ExtractedRequirements | null;
+  spatial_ratios?: SpatialRatiosConfig | null;
+  workstyle_preset?: WorkstylePreset;
 }
 
 // For updating an existing project
@@ -32,6 +37,8 @@ export interface UpdateProjectInput {
   prompt_text?: string;
   scenarios?: Scenario[] | null;
   extracted_requirements?: ExtractedRequirements | null;
+  spatial_ratios?: SpatialRatiosConfig | null;
+  workstyle_preset?: WorkstylePreset;
 }
 
 // API response types
