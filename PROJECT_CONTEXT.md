@@ -56,7 +56,7 @@ SpaceLogic is an AI-native SaaS platform that transforms how commercial real est
 
 **User flow:**
 1. Broker describes client needs in plain English: *"45 employees, growing to 60 in 2 years, need mix of private offices and open space, budget ~$400K/year"*
-2. AI instantly generates 3-5 scenarios with different tradeoffs
+2. AI instantly generates 3 scenarios with different tradeoffs
 3. Scenarios appear in seconds during client meeting
 4. Broker refines/adjusts as needed
 5. Export to professional proposal
@@ -71,7 +71,7 @@ SpaceLogic is an AI-native SaaS platform that transforms how commercial real est
 - Use Claude API (Sonnet 4) for natural language parsing
 - Extract: headcount, growth trajectory, space preferences, budget
 - Feed into scenario engine
-- Return 3-5 options (budget-optimized, growth-optimized, culture-optimized)
+- Return 3 options (budget-optimized, growth-optimized, culture-optimized)
 - Structured JSON output for consistent rendering
 
 ### 2. Interactive Space Calculator
@@ -312,7 +312,7 @@ $8,400/employee/year            $7,364/employee/year
 - **Deliverable:** Marketing assets for website/sales
 
 ### Phase 3: Industry Event Circuit (Months 7-9)
-- Co-founder presents at 3-5 CRE events
+- Co-founder presents at 3 CRE events
 - Live demo of natural language scenario builder
 - Special "early adopter" pricing
 - **Success metric:** 50+ signups, 10+ paid conversions
