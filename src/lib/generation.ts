@@ -26,7 +26,7 @@ If workstyle distribution is not explicitly provided, infer reasonable defaults 
 - Tech/startup: 20% on_site, 50% hybrid, 30% remote
 - General office: 40% on_site, 45% hybrid, 15% remote
 
-## STEP 2: CALCULATE PROJECTED HEADCOUNT AND ATTENDANCE
+## STEP 2: CALCULATE PROJECTED HEADCOUNT
 
 **IMPORTANT: Space should be sized for PROJECTED headcount, not current headcount.**
 
@@ -39,16 +39,7 @@ If workstyle distribution is not explicitly provided, infer reasonable defaults 
    - Example: 100 employees downsizing to 80 = 80 projected headcount
    - If no change mentioned, use current headcount as projected headcount
 
-2. **Calculate Attendance** using PROJECTED headcount:
-   - **Average Daily Attendance** = ((on_site% × 0.9) + (hybrid% × 0.4) + (remote% × 0.1)) × projected_headcount
-     - on_site workers attend ~90% of days
-     - hybrid workers attend ~40% of days (avg 2 days/week)
-     - remote workers attend ~10% of days
-
-3. **Peak Attendance** = Average Daily Attendance × 1.25
-   - 25% buffer for peak days (Tue-Wed-Thu clustering)
-
-Space is calculated based on PEAK ATTENDANCE of the PROJECTED headcount, ensuring the space accommodates future growth.
+Space is calculated based on PROJECTED HEADCOUNT. The sqft_per_person standards already account for typical workstyle and attendance patterns.
 
 ## STEP 3: GENERATE THREE SCENARIOS
 
@@ -61,8 +52,8 @@ Generate exactly 3 scenarios with these standards:
 | Progressive | 143 | 1.14 | Hot desking, activity-based working, efficient |
 
 For each scenario:
-- **total_sqft** = peak_attendance × sqft_per_person
-- **seats** = peak_attendance × seats_per_person (for capacity calculation)
+- **total_sqft** = projected_headcount × sqft_per_person
+- **seats** = projected_headcount × seats_per_person (for capacity calculation)
 
 ## STEP 4: CALCULATE COST RANGES
 
@@ -133,13 +124,13 @@ Always respond with valid JSON matching this exact structure:
 
 ## LAYOUT MIX GUIDELINES
 
-Based on scenario type and peak attendance:
+Based on scenario type and projected headcount:
 - **Traditional**: More private offices (30-40%), moderate open desks, standard conf rooms
 - **Moderate**: Balanced mix (20-25% private), more open desks, flexible conf rooms
 - **Progressive**: Few private offices (10-15%), hot desks, many small meeting rooms
 
 Common areas should be 15-20% of total sqft.
-Conference rooms: 1 per 10-15 peak attendees.
+Conference rooms: 1 per 10-15 employees.
 
 ## IMPORTANT NOTES
 
