@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Scenario } from '@/types/scenario';
+import { Scenario, COST_PER_SQFT } from '@/types/scenario';
 import { CATEGORY_CONFIG, SpaceCategory } from '@/types/kit-of-parts';
 
 interface ScenarioCardProps {
@@ -109,14 +109,11 @@ export default function ScenarioCard({ scenario, index, projectId }: ScenarioCar
         </div>
       </div>
 
-      {/* Cost Range - Primary display */}
-      <div className="mb-4 p-4 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border)]">
-        <div className="text-xs text-[var(--text-muted)] mb-1 uppercase tracking-wider">Annual Cost</div>
-        <div className="text-2xl font-semibold text-[var(--accent)] mono">
-          {formatCompactCurrency(scenario.annual_cost_range.mid)}
-        </div>
-        <div className="text-sm text-[var(--text-muted)] mt-1 mono">
-          {formatCompactCurrency(scenario.annual_cost_range.low)} – {formatCompactCurrency(scenario.annual_cost_range.high)}
+      {/* Total Space - Primary display */}
+      <div className="mb-4 p-4 rounded-xl bg-[var(--accent-muted)] border border-[var(--border-accent)]">
+        <div className="text-xs text-[var(--text-muted)] mb-1 uppercase tracking-wider">Total Space</div>
+        <div className="text-3xl font-semibold text-[var(--accent)] mono">
+          {formatNumber(scenario.total_sqft)} <span className="text-lg font-normal">sqft</span>
         </div>
       </div>
 
@@ -132,21 +129,42 @@ export default function ScenarioCard({ scenario, index, projectId }: ScenarioCar
         </div>
       </div>
 
-      {/* Key metrics */}
-      <div className="grid grid-cols-2 gap-3 mb-4 py-3 border-y border-[var(--border)]">
-        <div>
-          <div className="text-xs text-[var(--text-muted)] mb-0.5">Total Space</div>
-          <div className="text-sm font-medium text-[var(--text-primary)] mono">
-            {formatNumber(scenario.total_sqft)} sqft
-          </div>
+      {/* Tenant Improvement Costs */}
+      <div className="mb-4">
+        <div className="flex items-baseline gap-2 mb-3">
+          <span className="text-xs text-[var(--text-muted)] uppercase tracking-wider">Tenant Improvement Costs</span>
+          <span className="text-[10px] text-[var(--text-muted)]">(Class D Estimates)</span>
         </div>
-        <div>
-          <div className="text-xs text-[var(--text-muted)] mb-0.5">Cost/Employee</div>
-          <div className="text-sm font-medium text-[var(--text-primary)] mono">
-            {formatCompactCurrency(scenario.cost_per_employee_range.mid)}
+        <div className="space-y-2">
+          {/* Low */}
+          <div className="flex items-center justify-between p-2.5 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)]">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-[var(--text-secondary)] w-10">Low</span>
+              <span className="text-[10px] text-[var(--text-muted)] mono">${COST_PER_SQFT.low}/sqft</span>
+            </div>
+            <span className="text-sm font-semibold text-[var(--text-primary)] mono">
+              {formatCompactCurrency(scenario.annual_cost_range.low)}
+            </span>
           </div>
-          <div className="text-xs text-[var(--text-muted)] mono">
-            {formatCompactCurrency(scenario.cost_per_employee_range.low)}–{formatCompactCurrency(scenario.cost_per_employee_range.high)}
+          {/* Mid */}
+          <div className="flex items-center justify-between p-2.5 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)]">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-[var(--text-secondary)] w-10">Mid</span>
+              <span className="text-[10px] text-[var(--text-muted)] mono">${COST_PER_SQFT.mid}/sqft</span>
+            </div>
+            <span className="text-sm font-semibold text-[var(--text-primary)] mono">
+              {formatCompactCurrency(scenario.annual_cost_range.mid)}
+            </span>
+          </div>
+          {/* High */}
+          <div className="flex items-center justify-between p-2.5 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)]">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-[var(--text-secondary)] w-10">High</span>
+              <span className="text-[10px] text-[var(--text-muted)] mono">${COST_PER_SQFT.high}/sqft</span>
+            </div>
+            <span className="text-sm font-semibold text-[var(--text-primary)] mono">
+              {formatCompactCurrency(scenario.annual_cost_range.high)}
+            </span>
           </div>
         </div>
       </div>
@@ -177,22 +195,6 @@ export default function ScenarioCard({ scenario, index, projectId }: ScenarioCar
               <div className="text-xs text-[var(--text-muted)]">Workpoints</div>
             </div>
           </div>
-
-          {/* View Kit of Parts Link */}
-          {projectId && (
-            <Link
-              href={`/app/projects/${projectId}/kit-of-parts/${scenario.scenario_type}`}
-              className="flex items-center justify-center gap-2 mt-4 py-2 px-3 rounded-lg bg-[var(--accent-muted)] border border-[var(--border-accent)] text-[var(--accent)] text-sm font-medium hover:bg-[var(--accent)]/20 transition-colors"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="3" y="3" width="7" height="7" rx="1" />
-                <rect x="14" y="3" width="7" height="7" rx="1" />
-                <rect x="3" y="14" width="7" height="7" rx="1" />
-                <rect x="14" y="14" width="7" height="7" rx="1" />
-              </svg>
-              View Kit of Parts
-            </Link>
-          )}
         </div>
       ) : (
         // Fallback to legacy layout mix
@@ -252,7 +254,7 @@ export default function ScenarioCard({ scenario, index, projectId }: ScenarioCar
       )}
 
       {/* Pros and Cons */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
           <div className="text-xs font-medium text-[var(--success)] mb-2 uppercase tracking-wider">Pros</div>
           <ul className="space-y-1.5">
@@ -282,6 +284,22 @@ export default function ScenarioCard({ scenario, index, projectId }: ScenarioCar
           </ul>
         </div>
       </div>
+
+      {/* View Kit of Parts Link - at bottom */}
+      {hasKitOfParts && projectId && (
+        <Link
+          href={`/app/projects/${projectId}/kit-of-parts/${scenario.scenario_type}`}
+          className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)] text-[var(--text-secondary)] text-sm font-medium hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)] transition-colors mt-auto"
+        >
+          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <rect x="3" y="3" width="7" height="7" rx="1" />
+            <rect x="14" y="3" width="7" height="7" rx="1" />
+            <rect x="3" y="14" width="7" height="7" rx="1" />
+            <rect x="14" y="14" width="7" height="7" rx="1" />
+          </svg>
+          View Kit of Parts
+        </Link>
+      )}
     </div>
   );
 }

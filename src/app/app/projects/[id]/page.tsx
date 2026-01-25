@@ -415,7 +415,8 @@ export default function ProjectViewPage() {
         {/* Summary Card */}
         {extractedRequirements && (
           <div className="summary-card mb-8">
-            <div className="flex items-center gap-2 mb-6">
+            {/* Header */}
+            <div className="flex items-center gap-2 mb-5">
               <div className="icon-box w-8 h-8">
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -425,9 +426,11 @@ export default function ProjectViewPage() {
               <span className="font-medium text-[var(--text-primary)]">Summary</span>
             </div>
 
-            <div className="grid grid-cols-3 gap-6 pb-6 border-b border-[var(--border)]">
-              <div className="flex items-center gap-4">
-                <div className="icon-box">
+            {/* Key Metrics Row */}
+            <div className="grid grid-cols-3 gap-5 pb-5 border-b border-[var(--border)]">
+              {/* Headcount */}
+              <div className="flex items-center gap-3">
+                <div className="icon-box w-11 h-11">
                   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                     <circle cx="9" cy="7" r="4" />
@@ -436,76 +439,155 @@ export default function ProjectViewPage() {
                   </svg>
                 </div>
                 <div>
-                  <div className="text-xs text-[var(--text-muted)] mb-1">Current Headcount</div>
-                  <div className="text-2xl font-semibold mono">{extractedRequirements.current_headcount || '—'}</div>
+                  <div className="text-xs text-[var(--text-muted)] mb-0.5">Headcount</div>
+                  <div className="text-2xl font-semibold mono text-[var(--text-primary)]">
+                    {extractedRequirements.current_headcount || '—'}
+                    {scenarios[0]?.attendance_metrics && extractedRequirements.growth_projection && (
+                      <span className="text-base font-normal text-[var(--accent)] ml-1.5">
+                        → {scenarios[0].attendance_metrics.total_headcount}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
 
-              {extractedRequirements.growth_projection && (
-                <div className="flex items-center gap-4">
-                  <div className="icon-box">
-                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
-                      <polyline points="17 6 23 6 23 12" />
+              {/* Growth/Reduction */}
+              {extractedRequirements.growth_projection ? (
+                <div className="flex items-center gap-3">
+                  <div className="icon-box w-11 h-11 bg-[var(--accent)]/10 border-[var(--accent)]/20">
+                    <svg className="w-5 h-5 text-[var(--accent)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      {isReduction(extractedRequirements) ? (
+                        <>
+                          <polyline points="23 18 13.5 8.5 8.5 13.5 1 6" />
+                          <polyline points="17 18 23 18 23 12" />
+                        </>
+                      ) : (
+                        <>
+                          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                          <polyline points="17 6 23 6 23 12" />
+                        </>
+                      )}
                     </svg>
                   </div>
-                  <div>
-                    <div className="text-xs text-[var(--text-muted)] mb-1">
+                  <div className="min-w-0">
+                    <div className="text-xs text-[var(--text-muted)] mb-0.5">
                       {isReduction(extractedRequirements) ? 'Projected Reduction' : 'Projected Growth'}
                     </div>
-                    <div className="text-2xl font-semibold">
-                      <span className="text-[var(--accent)]">{extractedRequirements.growth_projection}</span>
+                    <div className="text-lg font-semibold text-[var(--accent)] truncate">
+                      {extractedRequirements.growth_projection}
                     </div>
                   </div>
                 </div>
+              ) : (
+                <div></div>
               )}
 
-              {extractedRequirements.location && (
-                <div className="flex items-center gap-4">
-                  <div className="icon-box">
+              {/* Location */}
+              {extractedRequirements.location ? (
+                <div className="flex items-center gap-3">
+                  <div className="icon-box w-11 h-11">
                     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                       <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                       <circle cx="12" cy="10" r="3" />
                     </svg>
                   </div>
                   <div>
-                    <div className="text-xs text-[var(--text-muted)] mb-1">Location</div>
-                    <div className="text-lg font-medium">{extractedRequirements.location}</div>
+                    <div className="text-xs text-[var(--text-muted)] mb-0.5">Location</div>
+                    <div className="text-lg font-semibold text-[var(--text-primary)]">{extractedRequirements.location}</div>
                   </div>
                 </div>
+              ) : (
+                <div></div>
               )}
             </div>
 
+            {/* Workstyle Distribution */}
             {extractedRequirements.workstyle_distribution && (
-              <div className="pt-6">
+              <div className="py-5 border-b border-[var(--border)]">
                 <div className="flex items-center gap-2 mb-4">
                   <svg className="w-4 h-4 text-[var(--text-muted)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
                     <polyline points="9 22 9 12 15 12 15 22" />
                   </svg>
-                  <span className="text-sm font-medium text-[var(--text-secondary)]">Aggregate Workstyle Distribution</span>
+                  <span className="text-sm font-medium text-[var(--text-secondary)]">Workstyle Distribution</span>
                 </div>
 
-                <div className="grid grid-cols-3 gap-6">
-                  <div className="text-center">
-                    <div className="text-xs text-[var(--text-muted)] mb-2">On-site (4-5 days)</div>
-                    <div className="text-3xl font-semibold mono">{extractedRequirements.workstyle_distribution.on_site}%</div>
+                {/* Stacked Bar with Labels */}
+                <div className="flex items-center gap-4">
+                  {/* Bar */}
+                  <div className="flex-1 h-10 rounded-lg overflow-hidden flex bg-[var(--bg-tertiary)]">
+                    {extractedRequirements.workstyle_distribution.on_site > 0 && (
+                      <div
+                        className="h-full flex items-center justify-center text-sm font-semibold text-white transition-all"
+                        style={{
+                          width: `${extractedRequirements.workstyle_distribution.on_site}%`,
+                          backgroundColor: 'var(--traditional)',
+                        }}
+                      >
+                        {extractedRequirements.workstyle_distribution.on_site >= 12 && (
+                          <span>{extractedRequirements.workstyle_distribution.on_site}%</span>
+                        )}
+                      </div>
+                    )}
+                    {extractedRequirements.workstyle_distribution.hybrid > 0 && (
+                      <div
+                        className="h-full flex items-center justify-center text-sm font-semibold text-white transition-all"
+                        style={{
+                          width: `${extractedRequirements.workstyle_distribution.hybrid}%`,
+                          backgroundColor: 'var(--moderate)',
+                        }}
+                      >
+                        {extractedRequirements.workstyle_distribution.hybrid >= 12 && (
+                          <span>{extractedRequirements.workstyle_distribution.hybrid}%</span>
+                        )}
+                      </div>
+                    )}
+                    {extractedRequirements.workstyle_distribution.remote > 0 && (
+                      <div
+                        className="h-full flex items-center justify-center text-sm font-semibold text-white transition-all"
+                        style={{
+                          width: `${extractedRequirements.workstyle_distribution.remote}%`,
+                          backgroundColor: 'var(--progressive)',
+                        }}
+                      >
+                        {extractedRequirements.workstyle_distribution.remote >= 12 && (
+                          <span>{extractedRequirements.workstyle_distribution.remote}%</span>
+                        )}
+                      </div>
+                    )}
                   </div>
-                  <div className="text-center border-x border-[var(--border)]">
-                    <div className="text-xs text-[var(--text-muted)] mb-2">Hybrid (1-3 days)</div>
-                    <div className="text-3xl font-semibold mono">{extractedRequirements.workstyle_distribution.hybrid}%</div>
+                </div>
+
+                {/* Legend */}
+                <div className="flex items-center gap-5 mt-3">
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-sm bg-[var(--traditional)]"></span>
+                    <span className="text-xs text-[var(--text-muted)]">On-site (4-5 days)</span>
+                    {extractedRequirements.workstyle_distribution.on_site < 12 && (
+                      <span className="text-xs font-medium text-[var(--text-secondary)] mono">{extractedRequirements.workstyle_distribution.on_site}%</span>
+                    )}
                   </div>
-                  <div className="text-center">
-                    <div className="text-xs text-[var(--text-muted)] mb-2">Remote (&lt;1 day)</div>
-                    <div className="text-3xl font-semibold mono">{extractedRequirements.workstyle_distribution.remote}%</div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-sm bg-[var(--moderate)]"></span>
+                    <span className="text-xs text-[var(--text-muted)]">Hybrid (1-3 days)</span>
+                    {extractedRequirements.workstyle_distribution.hybrid < 12 && (
+                      <span className="text-xs font-medium text-[var(--text-secondary)] mono">{extractedRequirements.workstyle_distribution.hybrid}%</span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-sm bg-[var(--progressive)]"></span>
+                    <span className="text-xs text-[var(--text-muted)]">Remote (&lt;1 day)</span>
+                    {extractedRequirements.workstyle_distribution.remote < 12 && (
+                      <span className="text-xs font-medium text-[var(--text-secondary)] mono">{extractedRequirements.workstyle_distribution.remote}%</span>
+                    )}
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Office Attendance - Calculated from Workstyle */}
-            {extractedRequirements.workstyle_distribution && scenarios[0]?.attendance_metrics && (
-              <div className="mt-6 pt-6 border-t border-[var(--border)]">
+            {/* Office Attendance */}
+            {scenarios[0]?.attendance_metrics && (
+              <div className="pt-5">
                 <div className="flex items-center gap-2 mb-4">
                   <svg className="w-4 h-4 text-[var(--accent)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -514,52 +596,37 @@ export default function ProjectViewPage() {
                     <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                   </svg>
                   <span className="text-sm font-medium text-[var(--text-secondary)]">Office Attendance</span>
-                  <span className="text-xs text-[var(--text-muted)]">(calculated from workstyle)</span>
                 </div>
 
-                <div className="p-4 rounded-xl bg-[var(--accent-muted)] border border-[var(--border-accent)]">
-                  <div className="grid grid-cols-3 gap-6 text-center">
-                    {/* Total Headcount */}
-                    <div>
-                      <div className="text-2xl font-semibold mono text-[var(--text-primary)]">
-                        {scenarios[0].attendance_metrics.total_headcount}
-                      </div>
-                      <div className="text-xs text-[var(--text-muted)] mt-1">
-                        Total Headcount
-                        {extractedRequirements.growth_projection && (
-                          <span className="block text-[var(--accent)]">
-                            {isReduction(extractedRequirements) ? '(after reduction)' : '(after growth)'}
-                          </span>
-                        )}
-                      </div>
+                <div className="grid grid-cols-3 gap-4">
+                  {/* Projected Headcount */}
+                  <div className="p-4 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border)] text-center">
+                    <div className="text-2xl font-semibold mono text-[var(--text-primary)]">
+                      {scenarios[0].attendance_metrics.total_headcount}
                     </div>
-
-                    {/* Average Daily */}
-                    <div className="border-x border-[var(--border-accent)]">
-                      <div className="text-2xl font-semibold mono text-[var(--text-primary)]">
-                        {Math.round(scenarios[0].attendance_metrics.average_daily_attendance)}
-                      </div>
-                      <div className="text-xs text-[var(--text-muted)] mt-1">
-                        Average Daily
-                        <span className="block">(typical day)</span>
-                      </div>
-                    </div>
-
-                    {/* Peak */}
-                    <div>
-                      <div className="text-2xl font-semibold mono text-[var(--accent)]">
-                        {Math.round(scenarios[0].attendance_metrics.peak_attendance)}
-                      </div>
-                      <div className="text-xs text-[var(--text-muted)] mt-1">
-                        Peak Attendance
-                        <span className="block">(Tue-Wed-Thu)</span>
-                      </div>
+                    <div className="text-xs text-[var(--text-muted)] mt-1">
+                      Projected Headcount
                     </div>
                   </div>
 
-                  {/* Calculation formula - subtle */}
-                  <div className="mt-4 pt-3 border-t border-[var(--border-accent)] text-xs text-[var(--text-muted)] text-center">
-                    Peak = Avg Daily × 1.25 buffer for mid-week clustering
+                  {/* Average Daily */}
+                  <div className="p-4 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border)] text-center">
+                    <div className="text-2xl font-semibold mono text-[var(--text-primary)]">
+                      {Math.round(scenarios[0].attendance_metrics.average_daily_attendance)}
+                    </div>
+                    <div className="text-xs text-[var(--text-muted)] mt-1">
+                      Average Daily
+                    </div>
+                  </div>
+
+                  {/* Peak Attendance */}
+                  <div className="p-4 rounded-xl bg-[var(--accent-muted)] border border-[var(--border-accent)] text-center">
+                    <div className="text-2xl font-semibold mono text-[var(--accent)]">
+                      {Math.round(scenarios[0].attendance_metrics.peak_attendance)}
+                    </div>
+                    <div className="text-xs text-[var(--text-muted)] mt-1">
+                      Peak (Tue-Wed-Thu)
+                    </div>
                   </div>
                 </div>
               </div>
