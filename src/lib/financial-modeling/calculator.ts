@@ -3,9 +3,92 @@ import {
   FinancialInputs,
   FinancialModel,
   MarketRates,
+  MarketOverrides,
   TI_COST_PER_SQFT,
   YearlyCashFlow,
 } from '@/types/financial-model';
+
+/**
+ * Default tiered brokerage rates by lease year
+ * Years 1-5: 5%, Years 6-10: 3%, Years 11+: 2%
+ */
+export const BROKERAGE_TIERS = [
+  { startYear: 1, endYear: 5, rate: 0.05 },
+  { startYear: 6, endYear: 10, rate: 0.03 },
+  { startYear: 11, endYear: Infinity, rate: 0.02 },
+] as const;
+
+/**
+ * Get brokerage tiers with any overrides applied
+ */
+export function getBrokerageTiers(overrides?: MarketOverrides | null) {
+  return [
+    { startYear: 1, endYear: 5, rate: overrides?.brokerage_rate_years_1_5 ?? BROKERAGE_TIERS[0].rate },
+    { startYear: 6, endYear: 10, rate: overrides?.brokerage_rate_years_6_10 ?? BROKERAGE_TIERS[1].rate },
+    { startYear: 11, endYear: Infinity, rate: overrides?.brokerage_rate_years_11_plus ?? BROKERAGE_TIERS[2].rate },
+  ];
+}
+
+/**
+ * Calculate brokerage fee using tiered rates
+ * Default: Years 1-5: 5%, Years 6-10: 3%, Years 11+: 2%
+ */
+export function calculateTieredBrokerage(
+  sqft: number,
+  baseRentPerSqft: number,
+  operatingCosts: number,
+  escalationRate: number,
+  leaseTerm: number,
+  overrides?: MarketOverrides | null
+): { totalBrokerage: number; blendedRate: number } {
+  let totalBrokerage = 0;
+  let totalLeaseValue = 0;
+  let currentRent = baseRentPerSqft;
+  let currentOps = operatingCosts;
+
+  const tiers = getBrokerageTiers(overrides);
+
+  for (let year = 1; year <= leaseTerm; year++) {
+    const yearValue = sqft * (currentRent + currentOps);
+    totalLeaseValue += yearValue;
+
+    // Find the applicable tier for this year
+    const tier = tiers.find(
+      (t) => year >= t.startYear && year <= t.endYear
+    );
+    const rate = tier?.rate ?? 0.02;
+
+    totalBrokerage += yearValue * rate;
+
+    currentRent *= 1 + escalationRate;
+    currentOps *= 1 + escalationRate;
+  }
+
+  const blendedRate = totalLeaseValue > 0 ? totalBrokerage / totalLeaseValue : 0;
+
+  return { totalBrokerage, blendedRate };
+}
+
+/**
+ * Merge default market rates with project-level overrides
+ */
+export function applyMarketOverrides(
+  marketRates: MarketRates,
+  overrides: MarketOverrides | null | undefined
+): MarketRates {
+  if (!overrides) return marketRates;
+
+  return {
+    ...marketRates,
+    class_a_rent: overrides.class_a_rent ?? marketRates.class_a_rent,
+    class_b_rent: overrides.class_b_rent ?? marketRates.class_b_rent,
+    class_c_rent: overrides.class_c_rent ?? marketRates.class_c_rent,
+    operating_costs: overrides.operating_costs ?? marketRates.operating_costs,
+    escalation_rate: overrides.escalation_rate ?? marketRates.escalation_rate,
+    ti_credit_per_sqft: overrides.ti_credit_per_sqft ?? marketRates.ti_credit_per_sqft,
+    rent_free_months: overrides.rent_free_months ?? marketRates.rent_free_months,
+  };
+}
 
 /**
  * Get the base rent per sqft for a given market and building class
@@ -55,24 +138,25 @@ export function calculateTotalLeaseValue(
 export function calculateFinancialModel(
   sqft: number,
   inputs: FinancialInputs,
-  marketRates: MarketRates
+  marketRates: MarketRates,
+  overrides?: MarketOverrides | null
 ): FinancialModel {
   const baseRentPerSqft = getBaseRent(marketRates, inputs.building_class);
   const tiCostPerSqft = TI_COST_PER_SQFT[inputs.ti_level];
 
-  // Calculate total lease value for brokerage
-  const totalLeaseValue = calculateTotalLeaseValue(
+  // Calculate tiered brokerage fee (pass overrides for custom rates)
+  const { totalBrokerage: brokerage } = calculateTieredBrokerage(
     sqft,
     baseRentPerSqft,
     marketRates.operating_costs,
     marketRates.escalation_rate,
-    inputs.lease_term
+    inputs.lease_term,
+    overrides
   );
 
   // One-time costs in Year 1
   const tiCosts = sqft * tiCostPerSqft;
   const tiCredit = sqft * marketRates.ti_credit_per_sqft;
-  const brokerage = totalLeaseValue * marketRates.brokerage_rate;
 
   const yearlyCashFlows: YearlyCashFlow[] = [];
   let cumulative = 0;

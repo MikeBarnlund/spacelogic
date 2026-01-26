@@ -1,6 +1,6 @@
 import { Scenario, ExtractedRequirements } from './scenario';
 import { SpatialRatiosConfig, WorkstylePreset } from './kit-of-parts';
-import { ScenarioFinancials } from './financial-model';
+import { ScenarioFinancials, MarketOverrides } from './financial-model';
 
 // Project database record
 export interface Project {
@@ -15,6 +15,7 @@ export interface Project {
   spatial_ratios: SpatialRatiosConfig | null;
   workstyle_preset: WorkstylePreset;
   financial_models: Record<WorkstylePreset, ScenarioFinancials> | null;
+  market_overrides: MarketOverrides | null;
   created_at: string;
   updated_at: string;
 }
@@ -43,6 +44,7 @@ export interface UpdateProjectInput {
   spatial_ratios?: SpatialRatiosConfig | null;
   workstyle_preset?: WorkstylePreset;
   financial_models?: Record<WorkstylePreset, ScenarioFinancials> | null;
+  market_overrides?: MarketOverrides | null;
 }
 
 // API response types

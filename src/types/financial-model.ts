@@ -10,6 +10,7 @@ export type TILevel = 'low' | 'mid' | 'high';
 export type LeaseTerm = 5 | 10 | 15 | 20;
 
 // Market rates for a specific city/market
+// Note: Brokerage uses standardized tiered rates (5%/3%/2%) - see BROKERAGE_TIERS in calculator.ts
 export interface MarketRates {
   market_key: string;
   market_name: string;
@@ -20,7 +21,21 @@ export interface MarketRates {
   escalation_rate: number;    // Annual % increase (e.g., 0.03 for 3%)
   ti_credit_per_sqft: number; // Landlord TI contribution
   rent_free_months: number;   // Months of free rent at start
-  brokerage_rate: number;     // % of total lease value (e.g., 0.05 for 5%)
+}
+
+// Partial market rates for project-level overrides
+export interface MarketOverrides {
+  class_a_rent?: number;
+  class_b_rent?: number;
+  class_c_rent?: number;
+  operating_costs?: number;
+  escalation_rate?: number;
+  ti_credit_per_sqft?: number;
+  rent_free_months?: number;
+  // Brokerage tier rates (as decimals, e.g., 0.05 for 5%)
+  brokerage_rate_years_1_5?: number;
+  brokerage_rate_years_6_10?: number;
+  brokerage_rate_years_11_plus?: number;
 }
 
 // User inputs for financial modeling

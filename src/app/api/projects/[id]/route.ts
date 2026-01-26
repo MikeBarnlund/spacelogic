@@ -88,6 +88,9 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     if (body.financial_models !== undefined) {
       updateData.financial_models = body.financial_models;
     }
+    if (body.market_overrides !== undefined) {
+      updateData.market_overrides = body.market_overrides;
+    }
 
     if (Object.keys(updateData).length === 0) {
       return NextResponse.json(

@@ -98,7 +98,7 @@ export default function ResultsSummary({ model }: ResultsSummaryProps) {
         <div className="space-y-2">
           <div className="flex items-center justify-between p-2.5 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)]">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-[#94a3b8]" />
+              <div className="w-2 h-2 rounded-full bg-[#2dd4bf]" />
               <span className="text-sm text-[var(--text-secondary)]">Base Rent</span>
             </div>
             <span className="text-sm font-medium text-[var(--text-primary)] mono">
@@ -107,7 +107,7 @@ export default function ResultsSummary({ model }: ResultsSummaryProps) {
           </div>
           <div className="flex items-center justify-between p-2.5 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)]">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-[#64748b]" />
+              <div className="w-2 h-2 rounded-full bg-[#0ea5e9]" />
               <span className="text-sm text-[var(--text-secondary)]">Operating Costs</span>
             </div>
             <span className="text-sm font-medium text-[var(--text-primary)] mono">
@@ -125,7 +125,7 @@ export default function ResultsSummary({ model }: ResultsSummaryProps) {
           </div>
           <div className="flex items-center justify-between p-2.5 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)]">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-[#10b981]" />
+              <div className="w-2 h-2 rounded-full bg-[#4ade80]" />
               <span className="text-sm text-[var(--text-secondary)]">TI Credit</span>
             </div>
             <span className="text-sm font-medium text-[var(--success)] mono">

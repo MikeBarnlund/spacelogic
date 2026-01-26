@@ -194,14 +194,14 @@ export default function CashFlowChart({ cashFlows }: CashFlowChartProps) {
             <Bar
               dataKey="Base Rent"
               stackId="a"
-              fill="#94a3b8"
+              fill="#2dd4bf"
               animationDuration={500}
               animationBegin={0}
             />
             <Bar
               dataKey="Operating"
               stackId="a"
-              fill="#64748b"
+              fill="#0ea5e9"
               animationDuration={500}
               animationBegin={100}
             />
@@ -215,7 +215,7 @@ export default function CashFlowChart({ cashFlows }: CashFlowChartProps) {
             <Bar
               dataKey="TI Credit"
               stackId="a"
-              fill="#10b981"
+              fill="#4ade80"
               animationDuration={500}
               animationBegin={300}
             />

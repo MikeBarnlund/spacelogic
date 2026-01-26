@@ -4,10 +4,14 @@
 export {
   calculateFinancialModel,
   calculateTotalLeaseValue,
+  calculateTieredBrokerage,
+  applyMarketOverrides,
   getBaseRent,
   formatCurrency,
   formatCurrencyFull,
   calculateComparison,
+  BROKERAGE_TIERS,
+  getBrokerageTiers,
 } from './calculator';
 
 export {

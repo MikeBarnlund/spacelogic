@@ -3,6 +3,7 @@ import { MarketRates } from '@/types/financial-model';
 // Canadian market base rents and defaults
 // Data represents typical market conditions for office leases
 
+// Note: Brokerage uses standardized tiered rates (5%/3%/2%) - see BROKERAGE_TIERS in calculator.ts
 export const CANADIAN_MARKETS: MarketRates[] = [
   {
     market_key: 'toronto',
@@ -14,7 +15,6 @@ export const CANADIAN_MARKETS: MarketRates[] = [
     escalation_rate: 0.03,
     ti_credit_per_sqft: 50.00,
     rent_free_months: 6,
-    brokerage_rate: 0.05,
   },
   {
     market_key: 'vancouver',
@@ -26,7 +26,6 @@ export const CANADIAN_MARKETS: MarketRates[] = [
     escalation_rate: 0.03,
     ti_credit_per_sqft: 45.00,
     rent_free_months: 4,
-    brokerage_rate: 0.05,
   },
   {
     market_key: 'calgary',
@@ -38,7 +37,6 @@ export const CANADIAN_MARKETS: MarketRates[] = [
     escalation_rate: 0.025,
     ti_credit_per_sqft: 40.00,
     rent_free_months: 6,
-    brokerage_rate: 0.05,
   },
   {
     market_key: 'montreal',
@@ -50,7 +48,6 @@ export const CANADIAN_MARKETS: MarketRates[] = [
     escalation_rate: 0.03,
     ti_credit_per_sqft: 35.00,
     rent_free_months: 4,
-    brokerage_rate: 0.05,
   },
   {
     market_key: 'ottawa',
@@ -62,7 +59,6 @@ export const CANADIAN_MARKETS: MarketRates[] = [
     escalation_rate: 0.025,
     ti_credit_per_sqft: 30.00,
     rent_free_months: 3,
-    brokerage_rate: 0.05,
   },
 ] as const;
 

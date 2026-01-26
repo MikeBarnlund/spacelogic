@@ -10,6 +10,7 @@ import {
   FinancialInputs,
   FinancialModel,
   MarketRates,
+  MarketOverrides,
 } from '@/types/financial-model';
 import {
   InputsForm,
@@ -17,7 +18,7 @@ import {
   CashFlowChart,
   ResultsSummary,
 } from '@/components/financial-modeling';
-import { getMarketRates, matchLocationToMarket } from '@/lib/financial-modeling';
+import { getMarketRates, applyMarketOverrides, matchLocationToMarket } from '@/lib/financial-modeling';
 
 const scenarioConfig: Record<WorkstylePreset, { label: string; color: string; bg: string }> = {
   traditional: {
@@ -48,9 +49,11 @@ export default function FinancialsPage() {
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [calculating, setCalculating] = useState(false);
+  const [savingOverrides, setSavingOverrides] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [model, setModel] = useState<FinancialModel | null>(null);
-  const [marketRates, setMarketRates] = useState<MarketRates | null>(null);
+  const [baseMarketRates, setBaseMarketRates] = useState<MarketRates | null>(null);
+  const [marketOverrides, setMarketOverrides] = useState<MarketOverrides | null>(null);
 
   // Default inputs
   const [inputs, setInputs] = useState<FinancialInputs>({
@@ -69,6 +72,11 @@ export default function FinancialsPage() {
   const workstylePreset = scenario_type as WorkstylePreset;
   const config = scenarioConfig[workstylePreset];
 
+  // Get effective market rates (base + overrides)
+  const effectiveMarketRates = baseMarketRates
+    ? applyMarketOverrides(baseMarketRates, marketOverrides)
+    : null;
+
   // Fetch project and load existing financial model
   useEffect(() => {
     const fetchProject = async () => {
@@ -82,6 +90,7 @@ export default function FinancialsPage() {
         }
         const data = await res.json();
         setProject(data.project);
+        setMarketOverrides(data.project.market_overrides || null);
 
         // Try to match project location to a market
         const location = data.project.extracted_requirements?.location;
@@ -92,11 +101,11 @@ export default function FinancialsPage() {
         if (existingModel) {
           setModel(existingModel);
           setInputs(existingModel.inputs);
-          setMarketRates(getMarketRates(existingModel.inputs.market_key));
+          setBaseMarketRates(getMarketRates(existingModel.inputs.market_key));
         } else {
           // Use detected market
           setInputs(prev => ({ ...prev, market_key: detectedMarket }));
-          setMarketRates(getMarketRates(detectedMarket));
+          setBaseMarketRates(getMarketRates(detectedMarket));
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load project');
@@ -129,7 +138,6 @@ export default function FinancialsPage() {
 
       const data = await res.json();
       setModel(data.model);
-      setMarketRates(getMarketRates(inputs.market_key));
     } catch (err) {
       console.error('Error calculating model:', err);
     } finally {
@@ -140,7 +148,35 @@ export default function FinancialsPage() {
   // Handle input changes
   const handleInputsChange = (newInputs: FinancialInputs) => {
     setInputs(newInputs);
-    setMarketRates(getMarketRates(newInputs.market_key));
+    setBaseMarketRates(getMarketRates(newInputs.market_key));
+  };
+
+  // Handle market overrides changes
+  const handleOverridesChange = async (newOverrides: MarketOverrides | null) => {
+    setSavingOverrides(true);
+    try {
+      const res = await fetch(`/api/projects/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          market_overrides: newOverrides,
+          // Clear financial models so they recalculate with new overrides
+          financial_models: null,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to save market overrides');
+      }
+
+      setMarketOverrides(newOverrides);
+      // Clear the model so it recalculates
+      setModel(null);
+    } catch (err) {
+      console.error('Error saving overrides:', err);
+    } finally {
+      setSavingOverrides(false);
+    }
   };
 
   // Calculate on button click or when inputs change (debounced)
@@ -152,7 +188,7 @@ export default function FinancialsPage() {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [inputs, project, loading, calculateModel]);
+  }, [inputs, project, loading, calculateModel, marketOverrides]);
 
   if (loading) {
     return (
@@ -293,10 +329,13 @@ export default function FinancialsPage() {
               />
             </div>
 
-            {marketRates && (
+            {effectiveMarketRates && (
               <AssumptionsPanel
-                marketRates={marketRates}
+                marketRates={effectiveMarketRates}
                 buildingClass={inputs.building_class}
+                overrides={marketOverrides}
+                onOverridesChange={handleOverridesChange}
+                isSaving={savingOverrides}
               />
             )}
           </div>

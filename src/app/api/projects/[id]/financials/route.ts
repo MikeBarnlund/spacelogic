@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { ScenarioFinancials, FinancialInputs } from '@/types/financial-model';
+import { ScenarioFinancials, FinancialInputs, MarketOverrides } from '@/types/financial-model';
 import { WorkstylePreset } from '@/types/kit-of-parts';
-import { calculateFinancialModel, getMarketRates } from '@/lib/financial-modeling';
+import { calculateFinancialModel, getMarketRates, applyMarketOverrides } from '@/lib/financial-modeling';
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -21,7 +21,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
     const { data: project, error } = await supabase
       .from('projects')
-      .select('financial_models, scenarios')
+      .select('financial_models, scenarios, market_overrides')
       .eq('id', id)
       .eq('user_id', user.id)
       .single();
@@ -40,6 +40,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({
       financial_models: project.financial_models || null,
       scenarios: project.scenarios || [],
+      market_overrides: project.market_overrides || null,
     });
   } catch (error) {
     console.error('Error in GET /api/projects/[id]/financials:', error);
@@ -75,10 +76,10 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    // Get the project to find the scenario sqft
+    // Get the project to find the scenario sqft and market overrides
     const { data: project, error: fetchError } = await supabase
       .from('projects')
-      .select('scenarios, financial_models')
+      .select('scenarios, financial_models, market_overrides')
       .eq('id', id)
       .eq('user_id', user.id)
       .single();
@@ -106,9 +107,11 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    // Get market rates and calculate financial model
-    const marketRates = getMarketRates(inputs.market_key);
-    const model = calculateFinancialModel(scenario.total_sqft, inputs, marketRates);
+    // Get market rates, apply any project overrides, and calculate financial model
+    const baseMarketRates = getMarketRates(inputs.market_key);
+    const overrides = project.market_overrides as MarketOverrides | null;
+    const marketRates = applyMarketOverrides(baseMarketRates, overrides);
+    const model = calculateFinancialModel(scenario.total_sqft, inputs, marketRates, overrides);
 
     // Prepare the updated financial models
     const currentModels = project.financial_models || {};
