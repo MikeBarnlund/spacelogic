@@ -285,20 +285,34 @@ export default function ScenarioCard({ scenario, index, projectId }: ScenarioCar
         </div>
       </div>
 
-      {/* View Kit of Parts Link - at bottom */}
-      {hasKitOfParts && projectId && (
-        <Link
-          href={`/app/projects/${projectId}/kit-of-parts/${scenario.scenario_type}`}
-          className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)] text-[var(--text-secondary)] text-sm font-medium hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)] transition-colors mt-auto"
-        >
-          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <rect x="3" y="3" width="7" height="7" rx="1" />
-            <rect x="14" y="3" width="7" height="7" rx="1" />
-            <rect x="3" y="14" width="7" height="7" rx="1" />
-            <rect x="14" y="14" width="7" height="7" rx="1" />
-          </svg>
-          View Kit of Parts
-        </Link>
+      {/* Action Links - at bottom */}
+      {projectId && (
+        <div className="flex flex-col gap-2 mt-auto">
+          {hasKitOfParts && (
+            <Link
+              href={`/app/projects/${projectId}/kit-of-parts/${scenario.scenario_type}`}
+              className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)] text-[var(--text-secondary)] text-sm font-medium hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)] transition-colors"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="3" width="7" height="7" rx="1" />
+                <rect x="14" y="3" width="7" height="7" rx="1" />
+                <rect x="3" y="14" width="7" height="7" rx="1" />
+                <rect x="14" y="14" width="7" height="7" rx="1" />
+              </svg>
+              View Kit of Parts
+            </Link>
+          )}
+          <Link
+            href={`/app/projects/${projectId}/financials/${scenario.scenario_type}`}
+            className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)] text-[var(--text-secondary)] text-sm font-medium hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)] transition-colors"
+          >
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="12" y1="1" x2="12" y2="23" />
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+            </svg>
+            View Financials
+          </Link>
+        </div>
       )}
     </div>
   );

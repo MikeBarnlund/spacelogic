@@ -85,6 +85,9 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     if (body.extracted_requirements !== undefined) {
       updateData.extracted_requirements = body.extracted_requirements;
     }
+    if (body.financial_models !== undefined) {
+      updateData.financial_models = body.financial_models;
+    }
 
     if (Object.keys(updateData).length === 0) {
       return NextResponse.json(

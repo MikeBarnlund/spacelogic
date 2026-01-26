@@ -1,4 +1,5 @@
 import { KitOfParts } from './kit-of-parts';
+import { FinancialModel } from './financial-model';
 
 // Workstyle distribution percentages (should sum to 100)
 export interface WorkstyleDistribution {
@@ -41,6 +42,7 @@ export interface Scenario {
   seats_per_person: number;
   layout_mix: LayoutMix;
   kit_of_parts?: KitOfParts; // Detailed space breakdown (optional for backward compatibility)
+  financial_model?: FinancialModel; // Financial modeling (optional)
   annual_cost_range: CostRange;
   cost_per_employee_range: CostRange;
   attendance_metrics: AttendanceMetrics;

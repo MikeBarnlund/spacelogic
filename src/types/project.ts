@@ -1,5 +1,6 @@
 import { Scenario, ExtractedRequirements } from './scenario';
 import { SpatialRatiosConfig, WorkstylePreset } from './kit-of-parts';
+import { ScenarioFinancials } from './financial-model';
 
 // Project database record
 export interface Project {
@@ -13,6 +14,7 @@ export interface Project {
   extracted_requirements: ExtractedRequirements | null;
   spatial_ratios: SpatialRatiosConfig | null;
   workstyle_preset: WorkstylePreset;
+  financial_models: Record<WorkstylePreset, ScenarioFinancials> | null;
   created_at: string;
   updated_at: string;
 }
@@ -27,6 +29,7 @@ export interface CreateProjectInput {
   extracted_requirements?: ExtractedRequirements | null;
   spatial_ratios?: SpatialRatiosConfig | null;
   workstyle_preset?: WorkstylePreset;
+  financial_models?: Record<WorkstylePreset, ScenarioFinancials> | null;
 }
 
 // For updating an existing project
@@ -39,6 +42,7 @@ export interface UpdateProjectInput {
   extracted_requirements?: ExtractedRequirements | null;
   spatial_ratios?: SpatialRatiosConfig | null;
   workstyle_preset?: WorkstylePreset;
+  financial_models?: Record<WorkstylePreset, ScenarioFinancials> | null;
 }
 
 // API response types

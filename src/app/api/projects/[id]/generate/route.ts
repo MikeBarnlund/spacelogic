@@ -59,12 +59,14 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     }
 
     // Update the project with new scenarios and prompt
+    // Clear financial_models since sqft values may have changed
     const { data: updatedProject, error: updateError } = await supabase
       .from('projects')
       .update({
         prompt_text: promptText,
         scenarios: result.data.scenarios,
         extracted_requirements: result.data.extracted_requirements,
+        financial_models: null,
       })
       .eq('id', id)
       .eq('user_id', user.id)
