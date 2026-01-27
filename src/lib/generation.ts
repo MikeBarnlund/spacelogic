@@ -256,10 +256,21 @@ function enhanceScenariosWithKitOfParts(
     // Generate backward-compatible layout_mix from Kit of Parts
     const layoutMix = generateLayoutMixFromKitOfParts(kitOfParts);
 
+    // Calculate actual seats_per_person and sqft_per_person from Kit of Parts
+    const actualSeatsPerPerson = headcount > 0
+      ? Math.round((kitOfParts.total_seats / headcount) * 100) / 100
+      : 0;
+    const actualSqftPerPerson = headcount > 0
+      ? Math.round(kitOfParts.total_usable_sqft / headcount)
+      : 0;
+
     return {
       ...scenario,
       kit_of_parts: kitOfParts,
       layout_mix: layoutMix, // Override Claude's layout_mix with calculated version
+      total_sqft: kitOfParts.total_usable_sqft, // Use calculated sqft
+      sqft_per_person: actualSqftPerPerson, // Use calculated sqft/person
+      seats_per_person: actualSeatsPerPerson, // Use calculated seats/person
     };
   });
 }
