@@ -7,6 +7,14 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
+/**
+ * Space calculation factors for converting usable sqft to total rentable sqft
+ * These are applied to total_sqft only, not to per-person or category calculations
+ */
+export const CIRCULATION_FACTOR = 0.35; // 35% for hallways, corridors, movement space
+export const CORE_FACTOR = 0.10;        // 10% for elevators, stairs, mechanical, etc.
+export const GROSS_UP_FACTOR = 1 + CIRCULATION_FACTOR + CORE_FACTOR; // 1.45 total
+
 const SYSTEM_PROMPT = `You are an expert commercial real estate (CRE) broker with 20 years of experience analyzing office space needs. You help tenant representation brokers quickly generate professional space scenarios for their clients.
 
 Your task is to analyze natural language descriptions of client needs and generate 3 distinct workspace scenarios based on workstyle and attendance patterns.
@@ -256,7 +264,7 @@ function enhanceScenariosWithKitOfParts(
     // Generate backward-compatible layout_mix from Kit of Parts
     const layoutMix = generateLayoutMixFromKitOfParts(kitOfParts);
 
-    // Calculate actual seats_per_person and sqft_per_person from Kit of Parts
+    // Calculate actual seats_per_person and sqft_per_person from Kit of Parts (usable sqft)
     const actualSeatsPerPerson = headcount > 0
       ? Math.round((kitOfParts.total_seats / headcount) * 100) / 100
       : 0;
@@ -264,12 +272,16 @@ function enhanceScenariosWithKitOfParts(
       ? Math.round(kitOfParts.total_usable_sqft / headcount)
       : 0;
 
+    // Calculate total rentable sqft with circulation and core factors
+    // Usable sqft + 35% circulation + 10% core = total rentable sqft
+    const totalRentableSqft = Math.round(kitOfParts.total_usable_sqft * GROSS_UP_FACTOR);
+
     return {
       ...scenario,
       kit_of_parts: kitOfParts,
       layout_mix: layoutMix, // Override Claude's layout_mix with calculated version
-      total_sqft: kitOfParts.total_usable_sqft, // Use calculated sqft
-      sqft_per_person: actualSqftPerPerson, // Use calculated sqft/person
+      total_sqft: totalRentableSqft, // Total rentable sqft (includes circulation + core)
+      sqft_per_person: actualSqftPerPerson, // Based on usable sqft only
       seats_per_person: actualSeatsPerPerson, // Use calculated seats/person
     };
   });
