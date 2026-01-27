@@ -10,10 +10,14 @@ const anthropic = new Anthropic({
 /**
  * Space calculation factors for converting usable sqft to total rentable sqft
  * These are applied to total_sqft only, not to per-person or category calculations
+ *
+ * Applied sequentially:
+ * 1. Usable sqft × (1 + CIRCULATION_FACTOR) = sqft with circulation
+ * 2. Sqft with circulation × (1 + CORE_FACTOR) = total rentable sqft
  */
 export const CIRCULATION_FACTOR = 0.35; // 35% for hallways, corridors, movement space
 export const CORE_FACTOR = 0.10;        // 10% for elevators, stairs, mechanical, etc.
-export const GROSS_UP_FACTOR = 1 + CIRCULATION_FACTOR + CORE_FACTOR; // 1.45 total
+export const GROSS_UP_FACTOR = (1 + CIRCULATION_FACTOR) * (1 + CORE_FACTOR); // 1.35 × 1.10 = 1.485
 
 const SYSTEM_PROMPT = `You are an expert commercial real estate (CRE) broker with 20 years of experience analyzing office space needs. You help tenant representation brokers quickly generate professional space scenarios for their clients.
 
