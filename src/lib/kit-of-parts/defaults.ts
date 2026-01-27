@@ -454,7 +454,7 @@ export const DEFAULT_SPACE_TYPES: SpaceType[] = [
     space_type_name: 'Wellness Space (Meditation Room)',
     category: 'socialization',
     typical_sqft: 200,
-    capacity: 2,
+    capacity: 0,
     ratio_basis: 'per_headcount',
     traditional_ratio: 1 / 50,   // 1:50
     moderate_ratio: 1 / 50,      // 1:50
