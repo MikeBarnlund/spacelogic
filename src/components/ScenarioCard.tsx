@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { Scenario, COST_PER_SQFT } from '@/types/scenario';
 import { CATEGORY_CONFIG, SpaceCategory } from '@/types/kit-of-parts';
+import Tooltip from '@/components/ui/Tooltip';
+import { SCENARIO_TYPE_TOOLTIPS } from '@/constants/tooltips';
 
 interface ScenarioCardProps {
   scenario: Scenario;
@@ -90,19 +92,26 @@ export default function ScenarioCard({ scenario, index, projectId }: ScenarioCar
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div>
-          <span
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium mb-2"
-            style={{
-              backgroundColor: config.bg,
-              color: config.color,
-            }}
-          >
+          <div className="flex items-center gap-1.5 mb-2">
             <span
-              className="w-1.5 h-1.5 rounded-full"
-              style={{ backgroundColor: config.color }}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium"
+              style={{
+                backgroundColor: config.bg,
+                color: config.color,
+              }}
+            >
+              <span
+                className="w-1.5 h-1.5 rounded-full"
+                style={{ backgroundColor: config.color }}
+              />
+              {config.label}
+            </span>
+            <Tooltip
+              heading={SCENARIO_TYPE_TOOLTIPS[scenario.scenario_type].heading}
+              content={SCENARIO_TYPE_TOOLTIPS[scenario.scenario_type].content}
+              position="right"
             />
-            {config.label}
-          </span>
+          </div>
           <h3 className="text-lg font-semibold text-[var(--text-primary)]">
             {scenario.scenario_name}
           </h3>

@@ -15,9 +15,9 @@ export default function HomePage() {
 
             {/* Headline */}
             <h1 className="mb-6 opacity-0 animate-fade-in-up delay-100">
-              Office space scenarios.
+              Office space scenarios and financials.
               <br />
-              <span className="text-[var(--primary)]">In minutes, not hours.</span>
+              <span className="text-[var(--primary)]">In minutes, not weeks.</span>
             </h1>
 
             {/* Subheadline */}
@@ -47,7 +47,7 @@ export default function HomePage() {
         <div className="container">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
             {[
-              { value: '8-15', unit: 'hrs', label: 'Saved per client' },
+              { value: 'Weeks', unit: '', label: 'Saved per client' },
               { value: '<10', unit: 'sec', label: 'To generate scenarios' },
               { value: '3', unit: '', label: 'Scenarios per query' },
               { value: '$499', unit: '/mo', label: 'Unlimited access' },

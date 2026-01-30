@@ -19,6 +19,8 @@ import {
   ResultsSummary,
 } from '@/components/financial-modeling';
 import { getMarketRates, applyMarketOverrides, matchLocationToMarket } from '@/lib/financial-modeling';
+import Tooltip from '@/components/ui/Tooltip';
+import { SCENARIO_TYPE_TOOLTIPS } from '@/constants/tooltips';
 
 const scenarioConfig: Record<WorkstylePreset, { label: string; color: string; bg: string }> = {
   traditional: {
@@ -294,6 +296,11 @@ export default function FinancialsPage() {
             <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: config.color }} />
             {config.label}
           </span>
+          <Tooltip
+            heading={SCENARIO_TYPE_TOOLTIPS[workstylePreset].heading}
+            content={SCENARIO_TYPE_TOOLTIPS[workstylePreset].content}
+            position="bottom"
+          />
         </div>
 
         {/* Page Header */}

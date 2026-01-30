@@ -1,4 +1,6 @@
 import { KitOfParts, WorkstylePreset, WORKSTYLE_RATIOS } from '@/types/kit-of-parts';
+import Tooltip from '@/components/ui/Tooltip';
+import { SCENARIO_TYPE_TOOLTIPS } from '@/constants/tooltips';
 
 interface WorkpointsCardProps {
   kit: KitOfParts;
@@ -66,8 +68,15 @@ export default function WorkpointsCard({ kit, headcount, workstylePreset }: Work
           </svg>
         </div>
         <div className="flex-1">
-          <div className="text-sm font-medium text-[var(--text-primary)]">
-            {presetLabels[workstylePreset]} Preset
+          <div className="flex items-center gap-1.5">
+            <span className="text-sm font-medium text-[var(--text-primary)]">
+              {presetLabels[workstylePreset]} Preset
+            </span>
+            <Tooltip
+              heading={SCENARIO_TYPE_TOOLTIPS[workstylePreset].heading}
+              content={SCENARIO_TYPE_TOOLTIPS[workstylePreset].content}
+              position="top"
+            />
           </div>
           <div className="text-xs text-[var(--text-muted)]">
             {presetDescriptions[workstylePreset]}
