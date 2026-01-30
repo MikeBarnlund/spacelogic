@@ -15,3 +15,15 @@ export const SCENARIO_TYPE_TOOLTIPS = {
 } as const;
 
 export type ScenarioTypeKey = keyof typeof SCENARIO_TYPE_TOOLTIPS;
+
+// Tooltip content for metrics
+export const METRIC_TOOLTIPS = {
+  totalSeatsPerPerson: {
+    heading: 'Total Seats per Person',
+    content: 'A gross seat count that includes every seating position within the workplace, across all space types, without adjusting for utilization or work mode suitability.',
+  },
+  effectiveSeatsPerPerson: {
+    heading: 'Effective Seats per Person',
+    content: 'To better reflect real-world behavior, effective seating capacity includes all concentration seats and assumes partial utilization (50%) of collaboration seating. This metric provides a more accurate assessment of how many functional workspaces are available to support daily occupancy.',
+  },
+} as const;

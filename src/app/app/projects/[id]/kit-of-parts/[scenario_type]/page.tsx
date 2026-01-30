@@ -219,7 +219,7 @@ export default function KitOfPartsPage() {
         </div>
 
         {/* Totals Summary */}
-        <TotalsSummary kit={kit} />
+        <TotalsSummary kit={kit} headcount={headcount} />
 
         {/* Back Link */}
         <div className="mt-8 text-center">
