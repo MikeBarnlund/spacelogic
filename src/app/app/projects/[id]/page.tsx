@@ -652,7 +652,13 @@ export default function ProjectViewPage() {
 
             <div className="grid md:grid-cols-3 gap-5">
               {scenarios.map((scenario, index) => (
-                <ScenarioCard key={index} scenario={scenario} index={index} projectId={project.id} />
+                <ScenarioCard
+                  key={index}
+                  scenario={scenario}
+                  index={index}
+                  projectId={project.id}
+                  kitOverrides={project.kit_overrides?.[scenario.scenario_type] || null}
+                />
               ))}
             </div>
 

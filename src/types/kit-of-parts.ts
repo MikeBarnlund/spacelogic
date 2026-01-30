@@ -17,6 +17,19 @@ export const WORKSTYLE_RATIOS: Record<WorkstylePreset, number> = {
   progressive: 2.60,
 } as const;
 
+// Override for a single space type
+export interface SpaceOverride {
+  count?: number;
+  sqft_per_unit?: number;
+  capacity_per_unit?: number;
+}
+
+// Overrides keyed by space_type_key
+export type ScenarioKitOverrides = Record<string, SpaceOverride>;
+
+// Project-level overrides keyed by scenario type
+export type ProjectKitOverrides = Partial<Record<WorkstylePreset, ScenarioKitOverrides>>;
+
 // Space type definition with ratios for each workstyle
 export interface SpaceType {
   space_type_key: string;

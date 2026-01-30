@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { ScenarioFinancials, FinancialInputs, MarketOverrides } from '@/types/financial-model';
-import { WorkstylePreset } from '@/types/kit-of-parts';
+import { WorkstylePreset, ProjectKitOverrides, KitOfParts } from '@/types/kit-of-parts';
 import { calculateFinancialModel, getMarketRates, applyMarketOverrides } from '@/lib/financial-modeling';
+import { applyKitOverrides } from '@/lib/kit-of-parts';
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -76,10 +77,10 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    // Get the project to find the scenario sqft and market overrides
+    // Get the project to find the scenario sqft, market overrides, and kit overrides
     const { data: project, error: fetchError } = await supabase
       .from('projects')
-      .select('scenarios, financial_models, market_overrides')
+      .select('scenarios, financial_models, market_overrides, kit_overrides')
       .eq('id', id)
       .eq('user_id', user.id)
       .single();
@@ -107,11 +108,22 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       );
     }
 
+    // Calculate effective sqft (apply kit overrides if present)
+    let effectiveSqft = scenario.total_sqft;
+    const kitOverrides = project.kit_overrides as ProjectKitOverrides | null;
+    if (kitOverrides?.[scenario_type] && scenario.kit_of_parts) {
+      const effectiveKit = applyKitOverrides(
+        scenario.kit_of_parts as KitOfParts,
+        kitOverrides[scenario_type]
+      );
+      effectiveSqft = effectiveKit.total_usable_sqft;
+    }
+
     // Get market rates, apply any project overrides, and calculate financial model
     const baseMarketRates = getMarketRates(inputs.market_key);
     const overrides = project.market_overrides as MarketOverrides | null;
     const marketRates = applyMarketOverrides(baseMarketRates, overrides);
-    const model = calculateFinancialModel(scenario.total_sqft, inputs, marketRates, overrides);
+    const model = calculateFinancialModel(effectiveSqft, inputs, marketRates, overrides);
 
     // Prepare the updated financial models
     const currentModels = project.financial_models || {};

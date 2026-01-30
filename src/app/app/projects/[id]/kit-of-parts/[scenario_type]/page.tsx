@@ -1,15 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Project } from '@/types/project';
 import { Scenario } from '@/types/scenario';
-import { WorkstylePreset, SpaceCategory } from '@/types/kit-of-parts';
+import { WorkstylePreset, ScenarioKitOverrides, ProjectKitOverrides } from '@/types/kit-of-parts';
 import {
   WorkpointsCard,
-  CategorySection,
-  TotalsSummary,
+  KitOfPartsEditor,
 } from '@/components/kit-of-parts';
 import Tooltip from '@/components/ui/Tooltip';
 import { SCENARIO_TYPE_TOOLTIPS } from '@/constants/tooltips';
@@ -39,6 +38,7 @@ export default function KitOfPartsPage() {
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [savingOverrides, setSavingOverrides] = useState(false);
 
   // Validate scenario_type
   const validScenarioTypes: WorkstylePreset[] = ['traditional', 'moderate', 'progressive'];
@@ -69,6 +69,60 @@ export default function KitOfPartsPage() {
     };
     fetchProject();
   }, [id]);
+
+  // Handle overrides change
+  const handleOverridesChange = useCallback(async (newOverrides: ScenarioKitOverrides | null) => {
+    if (!project) return;
+
+    setSavingOverrides(true);
+    try {
+      // Build the updated kit_overrides object
+      const currentKitOverrides = project.kit_overrides || {};
+      let updatedKitOverrides: ProjectKitOverrides | null;
+
+      if (newOverrides === null) {
+        // Remove overrides for this scenario
+        const { [workstylePreset]: _removed, ...rest } = currentKitOverrides;
+        void _removed; // Intentionally unused - destructuring to exclude
+        updatedKitOverrides = Object.keys(rest).length > 0 ? rest : null;
+      } else {
+        // Set overrides for this scenario
+        updatedKitOverrides = {
+          ...currentKitOverrides,
+          [workstylePreset]: newOverrides,
+        };
+      }
+
+      // Clear financial model for this scenario (needs recalculation)
+      let updatedFinancialModels = project.financial_models;
+      if (updatedFinancialModels && updatedFinancialModels[workstylePreset]) {
+        const { [workstylePreset]: _removedModel, ...rest } = updatedFinancialModels;
+        void _removedModel; // Intentionally unused - destructuring to exclude
+        updatedFinancialModels = Object.keys(rest).length > 0 ? rest as typeof updatedFinancialModels : null;
+      }
+
+      const res = await fetch(`/api/projects/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          kit_overrides: updatedKitOverrides,
+          financial_models: updatedFinancialModels,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to save overrides');
+      }
+
+      const data = await res.json();
+      setProject(data.project);
+    } catch (err) {
+      console.error('Error saving overrides:', err);
+      setError('Failed to save changes');
+    } finally {
+      setSavingOverrides(false);
+    }
+  }, [project, workstylePreset, id]);
 
   if (loading) {
     return (
@@ -143,7 +197,7 @@ export default function KitOfPartsPage() {
 
   const kit = scenario.kit_of_parts;
   const headcount = scenario.attendance_metrics.total_headcount;
-  const categories: SpaceCategory[] = ['concentration', 'collaboration', 'socialization', 'amenity'];
+  const scenarioOverrides = project.kit_overrides?.[workstylePreset] || null;
 
   return (
     <div className="min-h-screen py-12">
@@ -207,19 +261,14 @@ export default function KitOfPartsPage() {
           />
         </div>
 
-        {/* Category Sections */}
-        <div className="space-y-6 mb-6">
-          {categories.map((category) => (
-            <CategorySection
-              key={category}
-              category={category}
-              spaces={kit.spaces}
-            />
-          ))}
-        </div>
-
-        {/* Totals Summary */}
-        <TotalsSummary kit={kit} headcount={headcount} />
+        {/* Kit of Parts Editor */}
+        <KitOfPartsEditor
+          kit={kit}
+          headcount={headcount}
+          overrides={scenarioOverrides}
+          onOverridesChange={handleOverridesChange}
+          isSaving={savingOverrides}
+        />
 
         {/* Back Link */}
         <div className="mt-8 text-center">

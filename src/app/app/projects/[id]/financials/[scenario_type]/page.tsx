@@ -19,6 +19,7 @@ import {
   ResultsSummary,
 } from '@/components/financial-modeling';
 import { getMarketRates, applyMarketOverrides, matchLocationToMarket } from '@/lib/financial-modeling';
+import { applyKitOverrides } from '@/lib/kit-of-parts';
 import Tooltip from '@/components/ui/Tooltip';
 import { SCENARIO_TYPE_TOOLTIPS } from '@/constants/tooltips';
 
@@ -268,6 +269,19 @@ export default function FinancialsPage() {
     );
   }
 
+  // Calculate effective sqft with kit overrides (after null checks)
+  const kitOverrides = project.kit_overrides?.[workstylePreset];
+  const isKitCustomized = kitOverrides && Object.keys(kitOverrides).length > 0;
+  let effectiveSqft = scenario.total_sqft;
+  if (scenario.kit_of_parts) {
+    if (isKitCustomized) {
+      const effectiveKit = applyKitOverrides(scenario.kit_of_parts, kitOverrides);
+      effectiveSqft = effectiveKit.total_usable_sqft;
+    } else {
+      effectiveSqft = scenario.kit_of_parts.total_usable_sqft;
+    }
+  }
+
   return (
     <div className="min-h-screen py-12">
       <div className="container max-w-6xl">
@@ -314,8 +328,13 @@ export default function FinancialsPage() {
             </div>
             <div>
               <h1 className="text-2xl font-semibold text-[var(--text-primary)]">Financial Analysis</h1>
-              <p className="text-[var(--text-muted)]">
-                {scenario.scenario_name} · {formatNumber(scenario.total_sqft)} sqft
+              <p className="text-[var(--text-muted)] flex items-center gap-2">
+                {scenario.scenario_name} · {formatNumber(effectiveSqft)} sqft
+                {isKitCustomized && (
+                  <span className="text-[10px] text-[var(--warning)] bg-[var(--warning-muted)] px-1.5 py-0.5 rounded">
+                    Kit Customized
+                  </span>
+                )}
               </p>
             </div>
           </div>

@@ -1,6 +1,8 @@
+import { useMemo } from 'react';
 import Link from 'next/link';
 import { Scenario, COST_PER_SQFT } from '@/types/scenario';
-import { CATEGORY_CONFIG, SpaceCategory } from '@/types/kit-of-parts';
+import { CATEGORY_CONFIG, SpaceCategory, ScenarioKitOverrides } from '@/types/kit-of-parts';
+import { applyKitOverrides } from '@/lib/kit-of-parts';
 import Tooltip from '@/components/ui/Tooltip';
 import { SCENARIO_TYPE_TOOLTIPS } from '@/constants/tooltips';
 
@@ -8,6 +10,7 @@ interface ScenarioCardProps {
   scenario: Scenario;
   index: number;
   projectId?: string;
+  kitOverrides?: ScenarioKitOverrides | null;
 }
 
 const scenarioConfig = {
@@ -76,10 +79,36 @@ function CategoryBar({
   );
 }
 
-export default function ScenarioCard({ scenario, index, projectId }: ScenarioCardProps) {
+export default function ScenarioCard({ scenario, index, projectId, kitOverrides }: ScenarioCardProps) {
   const config = scenarioConfig[scenario.scenario_type] || scenarioConfig.moderate;
   const hasKitOfParts = !!scenario.kit_of_parts;
-  const kit = scenario.kit_of_parts;
+
+  // Apply kit overrides if present
+  const kit = useMemo(() => {
+    if (!scenario.kit_of_parts) return null;
+    if (!kitOverrides || Object.keys(kitOverrides).length === 0) {
+      return scenario.kit_of_parts;
+    }
+    return applyKitOverrides(scenario.kit_of_parts, kitOverrides);
+  }, [scenario.kit_of_parts, kitOverrides]);
+
+  // Calculate effective sqft and derived metrics
+  const effectiveSqft = kit?.total_usable_sqft ?? scenario.total_sqft;
+  const headcount = scenario.attendance_metrics.total_headcount;
+  const effectiveSqftPerPerson = Math.round(effectiveSqft / headcount);
+  const effectiveSeatsPerPerson = kit
+    ? Math.round((kit.total_seats / headcount) * 100) / 100
+    : scenario.seats_per_person;
+
+  // Recalculate TI costs with effective sqft
+  const effectiveCostRange = {
+    low: effectiveSqft * COST_PER_SQFT.low,
+    mid: effectiveSqft * COST_PER_SQFT.mid,
+    high: effectiveSqft * COST_PER_SQFT.high,
+  };
+
+  // Check if values are customized
+  const isCustomized = kitOverrides && Object.keys(kitOverrides).length > 0;
 
   return (
     <div
@@ -120,20 +149,27 @@ export default function ScenarioCard({ scenario, index, projectId }: ScenarioCar
 
       {/* Total Space - Primary display */}
       <div className="mb-4 p-4 rounded-xl bg-[var(--accent-muted)] border border-[var(--border-accent)]">
-        <div className="text-xs text-[var(--text-muted)] mb-1 uppercase tracking-wider">Total Space</div>
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-xs text-[var(--text-muted)] uppercase tracking-wider">Total Space</span>
+          {isCustomized && (
+            <span className="text-[10px] text-[var(--warning)] bg-[var(--warning-muted)] px-1.5 py-0.5 rounded">
+              Customized
+            </span>
+          )}
+        </div>
         <div className="text-3xl font-semibold text-[var(--accent)] mono">
-          {formatNumber(scenario.total_sqft)} <span className="text-lg font-normal">sqft</span>
+          {formatNumber(effectiveSqft)} <span className="text-lg font-normal">sqft</span>
         </div>
       </div>
 
       {/* Standards badges */}
       <div className="flex gap-2 mb-4">
         <div className="flex-1 p-3 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)] text-center">
-          <div className="text-sm font-medium text-[var(--text-primary)] mono">{scenario.sqft_per_person}</div>
+          <div className="text-sm font-medium text-[var(--text-primary)] mono">{effectiveSqftPerPerson}</div>
           <div className="text-xs text-[var(--text-muted)]">sqft/person</div>
         </div>
         <div className="flex-1 p-3 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)] text-center">
-          <div className="text-sm font-medium text-[var(--text-primary)] mono">{scenario.seats_per_person}</div>
+          <div className="text-sm font-medium text-[var(--text-primary)] mono">{effectiveSeatsPerPerson}</div>
           <div className="text-xs text-[var(--text-muted)]">seats/person</div>
         </div>
       </div>
@@ -152,7 +188,7 @@ export default function ScenarioCard({ scenario, index, projectId }: ScenarioCar
               <span className="text-[10px] text-[var(--text-muted)] mono">${COST_PER_SQFT.low}/sqft</span>
             </div>
             <span className="text-sm font-semibold text-[var(--text-primary)] mono">
-              {formatCompactCurrency(scenario.annual_cost_range.low)}
+              {formatCompactCurrency(effectiveCostRange.low)}
             </span>
           </div>
           {/* Mid */}
@@ -162,7 +198,7 @@ export default function ScenarioCard({ scenario, index, projectId }: ScenarioCar
               <span className="text-[10px] text-[var(--text-muted)] mono">${COST_PER_SQFT.mid}/sqft</span>
             </div>
             <span className="text-sm font-semibold text-[var(--text-primary)] mono">
-              {formatCompactCurrency(scenario.annual_cost_range.mid)}
+              {formatCompactCurrency(effectiveCostRange.mid)}
             </span>
           </div>
           {/* High */}
@@ -172,7 +208,7 @@ export default function ScenarioCard({ scenario, index, projectId }: ScenarioCar
               <span className="text-[10px] text-[var(--text-muted)] mono">${COST_PER_SQFT.high}/sqft</span>
             </div>
             <span className="text-sm font-semibold text-[var(--text-primary)] mono">
-              {formatCompactCurrency(scenario.annual_cost_range.high)}
+              {formatCompactCurrency(effectiveCostRange.high)}
             </span>
           </div>
         </div>

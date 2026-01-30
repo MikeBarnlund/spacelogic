@@ -91,6 +91,9 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     if (body.market_overrides !== undefined) {
       updateData.market_overrides = body.market_overrides;
     }
+    if (body.kit_overrides !== undefined) {
+      updateData.kit_overrides = body.kit_overrides;
+    }
 
     if (Object.keys(updateData).length === 0) {
       return NextResponse.json(
