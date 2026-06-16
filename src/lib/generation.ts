@@ -184,7 +184,7 @@ export async function generateScenarios(promptText: string): Promise<GenerationR
 
   try {
     const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-6',
       max_tokens: 2048,
       messages: [
         {
@@ -234,6 +234,27 @@ export async function generateScenarios(promptText: string): Promise<GenerationR
     };
   } catch (error) {
     console.error('Error generating scenarios:', error);
+
+    // Map Anthropic API errors to clean, user-facing messages so technical
+    // details (e.g. a retired model ID) never leak into the UI.
+    if (error instanceof Anthropic.NotFoundError) {
+      // 404 — almost always a retired/invalid model ID. The raw message is a
+      // JSON blob; surface something actionable instead.
+      return {
+        success: false,
+        error: 'The AI model is temporarily unavailable. Please try again shortly or contact support.',
+      };
+    }
+    if (error instanceof Anthropic.AuthenticationError) {
+      return { success: false, error: 'AI service authentication failed. Please contact support.' };
+    }
+    if (error instanceof Anthropic.RateLimitError) {
+      return { success: false, error: 'The AI service is busy right now. Please try again in a moment.' };
+    }
+    if (error instanceof Anthropic.APIError) {
+      return { success: false, error: 'The AI service returned an error. Please try again shortly.' };
+    }
+
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to generate scenarios',
